@@ -8,8 +8,8 @@ userID = None
 
 @views.route('/home', methods=['GET', 'POST'])
 def home():
+    print(userID)
     if request.method == 'POST':
-        global userID
         studentname = request.form.get('studentname')
         selfeval = request.form.get('selfeval')
 
@@ -36,7 +36,7 @@ def home():
             cursor.execute(sql)
             result = cursor.fetchall()
             peereval_sql = 'insert into `Peer_Evaluation`(evaluation_id, evaluator_id, evaluatee_id, assignment_id, date_submitted, self_evaluation) values(%s,%s,%s,%s,CURRENT_TIMESTAMP,%s)'
-            cursor.execute(peereval_sql, [result[0]['evaluation_id'] + 1, 302, 302, 402, selfeval])
+            cursor.execute(peereval_sql, [result[0]['evaluation_id'] + 1, userID, 302, 402, selfeval])
             dbconn.commit()
             sql2 = 'select outcome_id from `Outcome` order by outcome_id desc limit 1'
             cursor.execute(sql2)
@@ -52,6 +52,7 @@ def home():
 def login():
     error = False
     global userID
+    userID = None
 
     studentemail = request.form.get('studentemail')
     studentpassword = request.form.get('studentpassword')
@@ -67,16 +68,22 @@ def login():
     if error == False: 
         cursor = dbconn.cursor()
         sql = "SELECT student_id FROM `Student` WHERE email = %s AND password = %s;"
-        cursor.execute(sql, (studentemail, studentpassword))
+        cursor.execute(sql, [studentemail, studentpassword])
         results = cursor.fetchall()
         if results:
              userID = results[0]['student_id']
-             return render_template("portal.html")
-    return render_template("login.html")
+             print(userID)
+             return portal()
+    return render_template("login.html", userID = userID)
 
 @views.route("/portal")
 def portal():
-    return render_template("portal.html")
+    sql = 'select c.course_name, co.course_id, a.offering_id, a.deadline from `Course` as c left join `Course_Offering` as co on (c.course_id = co.course_id) left join `Assignment` as a on (co.offering_id = a.offering_id) where a.student_id = %s;'
+    cursor.execute(sql, [userID])
+    result = cursor.fetchall()
+    print(result)
+    print('TEST TEST TEST TEST TEST')
+    return render_template("portal.html", assignments = result, userID = userID)
 
 @views.route("/dashboard")
 def dashboard():

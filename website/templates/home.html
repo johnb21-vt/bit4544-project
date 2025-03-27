@@ -11,9 +11,8 @@
       </button>
       <div style="color: white;" class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div style="color: white;" class="navbar-nav">
-          <a style="color: white; font-weight: bold;" class="nav-link" aria-current="page" href="/home">Peer Review Portal</a>
+          <a style="color: white; font-weight: bold;" class="nav-link" aria-current="page" href="/portal">Peer Review Portal</a>
           <a style="color: white;" class="nav-link" href="/dashboard">Performance Dashboard</a>
-          <a style="color: white;" class="nav-link" href="/portal">Evaluation Calander</a>
           <a style="color: white;" class="nav-link" href="/">Login</a>
         </div>
       </div>
@@ -55,7 +54,7 @@
 
 <!-- onsubmit="sendToIFTTT(event)"  -->
 
-<form method="POST" onsubmit="sendToIFTTT(event)">
+<form method="POST">
     <div style="display: flex; align-items: center; justify-content: center;">
         <div style="padding: 25px; background-color: #bbab95; color: black; border: black 2px solid; margin: 50px 0;">
             <h2 style="display: flex; justify-content: center; margin: 0 0 25px 0;">Peer Evaluation Form</h2>
@@ -284,7 +283,7 @@
     </tbody>
 </table> -->
 
-<script>
+<!-- <script>
     function sendToIFTTT(event) {
         event.preventDefault(); // Stop form from reloading the page
 
@@ -306,5 +305,5 @@
         alert("Peer evaluation submitted! (Email will be sent if everything worked.)");
         document.querySelector("form").reset(); // optional: reset form
     }
-</script>
+</script> -->
 {% endblock %}

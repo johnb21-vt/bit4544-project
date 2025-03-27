@@ -4,21 +4,20 @@
 
 {% block navbar %}
 <nav class="navbar navbar-expand-lg" style="background-color: #142057;">
-    <div class="container-fluid" style="color: white;">
-      <a class="navbar-brand" href="#" style="color: white;">SMU Feedback Hub</a>
-      <button style="color: white;" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span style="color: white;" class="navbar-toggler-icon"></span>
-      </button>
-      <div style="color: white;" class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div style="color: white;" class="navbar-nav">
-          <a style="color: white;  font-weight: bold;" class="nav-link" href="/home">Peer Review Portal</a>
-          <a style="color: white;" class="nav-link" href="/dashboard">Performance Dashboard</a>
-          <a style="color: white;" class="nav-link" href="/portal">Evaluation Calander</a>
-          <a style="color: white;" class="nav-link" aria-current="page" href="/login">Login</a>
-        </div>
+  <div class="container-fluid" style="color: white;">
+    <a class="navbar-brand" href="#" style="color: white;">SMU Feedback Hub</a>
+    <button style="color: white;" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span style="color: white;" class="navbar-toggler-icon"></span>
+    </button>
+    <div style="color: white;" class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div style="color: white;" class="navbar-nav">
+        <a style="color: white; font-weight: bold;" class="nav-link" aria-current="page" href="/portal">Peer Review Portal</a>
+        <a style="color: white;" class="nav-link" href="/dashboard">Performance Dashboard</a>
+        <a style="color: white;" class="nav-link" href="/">Login</a>
       </div>
     </div>
-  </nav>
+  </div>
+</nav>
 {% endblock %}
 
 {% block content %}
@@ -26,27 +25,37 @@
 <style>
   .grid-container {
     display: grid;
-    grid-template-columns: 75px 75px 75px;
+    width: 900px;
+    grid-template-columns: 300px 300px 300px;
     grid-template-rows: auto;
-    gap: 32px;
   }
   
   .card {
-    background-color: peachpuff;
-    border: 1px solid black;
-    height: 75px;
+    background-color: #bbab95;
+    border: 2px solid black;
+    height: 400px;
+    margin: 25px;
   }
 </style>
 
 <h1 style="margin: 25px;">Peer Review Portal</h1>
 
+{% if userID == None %}
+  <p style="margin: 25px; font-size: 30px">Login to access your peer evaluation portal.</p>
+{% endif %}
+
 <div class="grid-container">
-  <div class="card"></div>
-  <div class="card"></div>
-  <div class="card"></div>
-  <div class="card"></div>
-  <div class="card"></div>
-  <div class="card"></div> 
+  {% if userID != None %}
+    {% for assignment in assignments %}
+    <div class="card" style="display: flex; justify-content: center; align-items: center; gap: 10px; text-align: center;">
+      <img src="{{ url_for('static', filename='images/student.png') }}" style="height: 100px; width: 100px;">
+      <h3>Course</h3>
+      <p>{{ assignment['course_name'] }}</p>
+      <p>Deadline: {{ assignment['deadline'] }}</p>
+      <a href="/home" class="btn btn-primary">Go</a>
+    </div>
+    {% endfor %}
+  {% endif %}
 </div>
 
 {% endblock %}
