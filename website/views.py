@@ -4,16 +4,20 @@ from website import dbconn, cursor
 from datetime import date
 
 views = Blueprint('views', __name__)
+userID = None
 
 @views.route('/home', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
+        global userID
         studentname = request.form.get('studentname')
         selfeval = request.form.get('selfeval')
+
         if selfeval == None:
             selfeval = False
         else:
             selfeval = True
+        
         dk = int(request.form.get('options'))
         mk = int(request.form.get('options2'))
         ctps = int(request.form.get('options3'))
@@ -26,7 +30,7 @@ def home():
         sdml = int(request.form.get('options10'))
         rp = int(request.form.get('options11'))
         average = (dk+mk+ctps+ies+cl+c+ius+stdia+esr+sdml+rp)/11
-        print(average)
+        print('TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST')
         try:
             sql = 'select evaluation_id from `Peer_Evaluation` order by evaluation_id desc limit 1'
             cursor.execute(sql)
@@ -42,11 +46,32 @@ def home():
             dbconn.commit()
         except ValueError:
             flash('Commit failure, try again.', category='error')
-    
     return render_template("home.html")
 
-@views.route("/")
+@views.route("/", methods=['POST', 'GET'])
 def login():
+    error = False
+    global userID
+
+    studentemail = request.form.get('studentemail')
+    studentpassword = request.form.get('studentpassword')
+
+    if not studentemail:
+        error = True
+        flash("Please enter your email.")
+    if not studentpassword:
+        error = True
+        flash("Please enter your password.")
+    
+    # Redirect back if there's an error
+    if error == False: 
+        cursor = dbconn.cursor()
+        sql = "SELECT student_id FROM `Student` WHERE email = %s AND password = %s;"
+        cursor.execute(sql, (studentemail, studentpassword))
+        results = cursor.fetchall()
+        if results:
+             userID = results[0]['student_id']
+             return render_template("portal.html")
     return render_template("login.html")
 
 @views.route("/portal")

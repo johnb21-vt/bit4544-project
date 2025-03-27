@@ -13,7 +13,7 @@
         <div style="color: white;" class="navbar-nav">
           <a style="color: white; font-weight: bold;" class="nav-link" aria-current="page" href="/home">Peer Review Portal</a>
           <a style="color: white;" class="nav-link" href="/dashboard">Performance Dashboard</a>
-          <a style="color: white;" class="nav-link" href="#">Evaluation Calander</a>
+          <a style="color: white;" class="nav-link" href="/portal">Evaluation Calander</a>
           <a style="color: white;" class="nav-link" href="/">Login</a>
         </div>
       </div>
@@ -52,6 +52,8 @@
         {% endfor %}
     {% endif %}
 {% endwith %}
+
+<!-- onsubmit="sendToIFTTT(event)"  -->
 
 <form method="POST" onsubmit="sendToIFTTT(event)">
     <div style="display: flex; align-items: center; justify-content: center;">
@@ -281,6 +283,7 @@
         {% endfor %}
     </tbody>
 </table> -->
+
 <script>
     function sendToIFTTT(event) {
         event.preventDefault(); // Stop form from reloading the page
@@ -290,6 +293,7 @@
 
         fetch("https://maker.ifttt.com/trigger/peer_eval_submitted/json/with/key/bZAvsaJHLY0kST65_VpkQH", {
             method: "POST",
+            mode: "no-cors",  // <--- THIS IS THE KEY FIX
             headers: {
                 "Content-Type": "application/json"
             },
@@ -297,19 +301,10 @@
                 value1: studentName,
                 value2: selfEval ? "Yes" : "No"
             })
-        })
-        .then(response => {
-            if (response.ok) {
-                alert("Peer evaluation submitted! Email sent.");
-                document.querySelector("form").reset(); // optional: reset form
-            } else {
-                alert("Something went wrong with IFTTT.");
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("Failed to connect to IFTTT.");
         });
+
+        alert("Peer evaluation submitted! (Email will be sent if everything worked.)");
+        document.querySelector("form").reset(); // optional: reset form
     }
 </script>
 {% endblock %}
