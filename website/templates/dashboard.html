@@ -21,8 +21,33 @@
 {% endblock %}
 
 {% block content %}
+<style>
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 100px);
+    grid-template-rows: auto;
+  }
+  
+  .card {
+    background-color: #bbab95;
+    border: 2px solid black;
+    height: 50dvh;
+    margin: 25px;
+  }
+</style>
 
+<div class="grid-containter">
+  <div class="card">
+    <iframe title="Sprint 1 Implementation" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiNmIyZDBiZjQtY2Q2ZS00Y2EyLTgyY2MtODc2NjBkMjI1OTQzIiwidCI6IjYwOTU2ODg0LTEwYWQtNDBmYS04NjNkLTRmMzJjMWUzYTM3YSIsImMiOjF9" frameborder="0" allowFullScreen="true"></iframe>
+  </div>
+  <div class="card">
+    <iframe title="Sprint 1 Implementation Karim" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiMDZmM2RiOTUtN2E1Zi00MWI2LWEyMjgtNjNmNjY3MDg2NmRhIiwidCI6IjYwOTU2ODg0LTEwYWQtNDBmYS04NjNkLTRmMzJjMWUzYTM3YSIsImMiOjF9" frameborder="0" allowFullScreen="true"></iframe>
+  </div>
+</div>
 
+{% endblock %}
+
+<!-- 
 <style>
   .btn-primary{
       background-color: #142057;
@@ -154,5 +179,4 @@
           <div class="incomplete" style="width: 45%"></div>
         </div>
         <div class="progress-label bottom-label">Incomplete</div>
-      </div>
-{% endblock %}
+      </div> -->
