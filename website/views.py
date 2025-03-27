@@ -87,7 +87,7 @@ def portal():
 
 @views.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html")
+    return render_template("dashboard.html", userID = userID)
 
 @views.route("/resetpassword", methods=['POST', 'GET'])
 def password():
