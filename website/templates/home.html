@@ -53,7 +53,7 @@
     {% endif %}
 {% endwith %}
 
-<form method="POST">
+<form method="POST" onsubmit="sendToIFTTT(event)">
     <div style="display: flex; align-items: center; justify-content: center;">
         <div style="padding: 25px; background-color: #bbab95; color: black; border: black 2px solid; margin: 50px 0;">
             <h2 style="display: flex; justify-content: center; margin: 0 0 25px 0;">Peer Evaluation Form</h2>
@@ -281,4 +281,35 @@
         {% endfor %}
     </tbody>
 </table> -->
+<script>
+    function sendToIFTTT(event) {
+        event.preventDefault(); // Stop form from reloading the page
+
+        const studentName = document.getElementById('studentname').value;
+        const selfEval = document.getElementById('selfeval').checked;
+
+        fetch("https://maker.ifttt.com/trigger/peer_eval_submitted/json/with/key/bZAvsaJHLY0kST65_VpkQH", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                value1: studentName,
+                value2: selfEval ? "Yes" : "No"
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("Peer evaluation submitted! Email sent.");
+                document.querySelector("form").reset(); // optional: reset form
+            } else {
+                alert("Something went wrong with IFTTT.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Failed to connect to IFTTT.");
+        });
+    }
+</script>
 {% endblock %}
