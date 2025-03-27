@@ -54,7 +54,7 @@
 
 <!-- onsubmit="sendToIFTTT(event)"  -->
 
-<form method="POST">
+<form method="POST" onsubmit="sendToIFTTT(event)">
     <div style="display: flex; align-items: center; justify-content: center;">
         <div style="padding: 25px; background-color: #bbab95; color: black; border: black 2px solid; margin: 50px 0;">
             <h2 style="display: flex; justify-content: center; margin: 0 0 25px 0;">Peer Evaluation Form</h2>
@@ -283,9 +283,9 @@
     </tbody>
 </table> -->
 
-<!-- <script>
+<script>
     function sendToIFTTT(event) {
-        event.preventDefault(); // Stop form from reloading the page
+        //event.preventDefault(); // Stop form from reloading the page
 
         const studentName = document.getElementById('studentname').value;
         const selfEval = document.getElementById('selfeval').checked;
@@ -305,5 +305,5 @@
         alert("Peer evaluation submitted! (Email will be sent if everything worked.)");
         document.querySelector("form").reset(); // optional: reset form
     }
-</script> -->
+</script>
 {% endblock %}

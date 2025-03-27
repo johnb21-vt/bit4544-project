@@ -82,6 +82,7 @@ def portal():
     sql = 'select c.course_name, co.course_id, a.offering_id, a.deadline, a.assignment_id, a.completed from `Course` as c left join `Course_Offering` as co on (c.course_id = co.course_id) left join `Assignment` as a on (co.offering_id = a.offering_id) where a.student_id = %s;'
     cursor.execute(sql, [userID])
     result = cursor.fetchall()
+    print(result)
     return render_template("portal.html", assignments = result, userID = userID)
 
 @views.route("/dashboard")
