@@ -12,11 +12,8 @@ def home():
     sql = 'select name, student_id from `Student`'
     cursor.execute(sql)
     students = cursor.fetchall()
-    print(students)
     if request.method == 'POST':
         studentid = request.form.get('studentid')
-        print(studentid)
-        print(userID)
         selfeval = False
         if int(studentid) == int(userID):
             selfeval = True
@@ -32,7 +29,6 @@ def home():
         sdml = int(request.form.get('options10'))
         rp = int(request.form.get('options11'))
         average = (dk+mk+ctps+ies+cl+c+ius+stdia+esr+sdml+rp)/11
-        print('TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST')
         try:
             sql = 'select evaluation_id from `Peer_Evaluation` order by evaluation_id desc limit 1'
             cursor.execute(sql)
@@ -78,7 +74,6 @@ def login():
         results = cursor.fetchall()
         if results:
              userID = results[0]['student_id']
-             print(userID)
              return portal()
     return render_template("login.html", userID = userID)
 
@@ -87,10 +82,38 @@ def portal():
     sql = 'select c.course_name, co.course_id, a.offering_id, a.deadline, a.assignment_id, a.completed from `Course` as c left join `Course_Offering` as co on (c.course_id = co.course_id) left join `Assignment` as a on (co.offering_id = a.offering_id) where a.student_id = %s;'
     cursor.execute(sql, [userID])
     result = cursor.fetchall()
-    print(result)
-    print('TEST TEST TEST TEST TEST')
     return render_template("portal.html", assignments = result, userID = userID)
 
 @views.route("/dashboard")
 def dashboard():
     return render_template("dashboard.html")
+
+@views.route("/resetpassword", methods=['POST', 'GET'])
+def password():
+    if request.method == 'POST':
+        email = request.form.get('studentemail')
+        studentpassword = request.form.get('studentpassword')
+        studentconfirm = request.form.get('studentpasswordconfirm')
+        if studentconfirm == studentpassword:
+            sql = 'update `Student` as s set s.password = %s where s.email = %s'
+            cursor.execute(sql, [studentpassword, email])
+            dbconn.commit()
+            return login()
+    return render_template("password.html")
+
+@views.route("/signup", methods=['POST', 'GET'])
+def signup():
+    sql = 'select student_id from `Student` order by student_id desc limit 1'
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    if request.method == 'POST':
+        name = request.form.get('studentname')
+        email = request.form.get('studentemail')
+        studentpassword = request.form.get('studentpassword')
+        studentconfirm = request.form.get('studentpasswordconfirm')
+        if studentconfirm == studentpassword:
+            sql = 'insert into `Student`(student_id, name, email, password) values(%s, %s, %s, %s)'
+            cursor.execute(sql, [result[0]['student_id'] + 1, name, email, studentpassword])
+            dbconn.commit()
+            return login()
+    return render_template("signup.html")
