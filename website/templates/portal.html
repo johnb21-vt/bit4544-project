@@ -25,8 +25,8 @@
 <style>
   .grid-container {
     display: grid;
-    width: 900px;
-    grid-template-columns: 300px 300px 300px;
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, 300px);
     grid-template-rows: auto;
   }
   
@@ -36,6 +36,15 @@
     height: 400px;
     margin: 25px;
   }
+
+  .btn-primary{
+    background-color: #142057;
+    border: #142057;
+}
+.btn-primary:hover{
+    background-color: #0e173d;
+    border: #0e173d;
+}
 </style>
 
 <h1 style="margin: 25px;">Peer Review Portal</h1>
@@ -47,13 +56,15 @@
 <div class="grid-container">
   {% if userID != None %}
     {% for assignment in assignments %}
-    <div class="card" style="display: flex; justify-content: center; align-items: center; gap: 10px; text-align: center;">
-      <img src="{{ url_for('static', filename='images/student.png') }}" style="height: 100px; width: 100px;">
-      <h3>Course</h3>
-      <p>{{ assignment['course_name'] }}</p>
-      <p>Deadline: {{ assignment['deadline'] }}</p>
-      <a href="/home" class="btn btn-primary">Go</a>
-    </div>
+    {% if not assignment['completed'] %}
+        <div class="card" style="display: flex; justify-content: center; align-items: center; gap: 10px; text-align: center;">
+          <img src="{{ url_for('static', filename='images/student.png') }}" style="height: 100px; width: 100px;">
+          <h3>Course</h3>
+          <p>{{ assignment['course_name'] }}</p>
+          <p>Deadline: {{ assignment['deadline'] }}</p>
+          <a href="/home?assignmentid={{ assignment['assignment_id'] }}" class="btn btn-primary" style="width: 150px;">Go</a>
+        </div>
+    {% endif %}
     {% endfor %}
   {% endif %}
 </div>

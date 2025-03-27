@@ -61,11 +61,11 @@
             <div style="display: flex; justify-content: center; margin: 25px">
                 <div>
                     <label for="studentid">Student Being Evaluated: </label>
-                    <input type="text" name="studentname" id="studentname" placeholder="Enter student name">
-                    <br>
-                    <br>
-                    <label for="option">Check if doing a self evaluation: </label>
-                    <input type="checkbox" name="selfeval" id="selfeval" autocomplete="off">
+                    <select name="studentid" id="studentid">
+                        {% for student in students %}
+                        <option value="{{ student['student_id'] }}">{{ student['name'] }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">

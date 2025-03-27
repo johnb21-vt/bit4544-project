@@ -8,16 +8,18 @@ userID = None
 
 @views.route('/home', methods=['GET', 'POST'])
 def home():
-    print(userID)
+    assignmentid = request.args.get('assignmentid')
+    sql = 'select name, student_id from `Student`'
+    cursor.execute(sql)
+    students = cursor.fetchall()
+    print(students)
     if request.method == 'POST':
-        studentname = request.form.get('studentname')
-        selfeval = request.form.get('selfeval')
-
-        if selfeval == None:
-            selfeval = False
-        else:
+        studentid = request.form.get('studentid')
+        print(studentid)
+        print(userID)
+        selfeval = False
+        if int(studentid) == int(userID):
             selfeval = True
-        
         dk = int(request.form.get('options'))
         mk = int(request.form.get('options2'))
         ctps = int(request.form.get('options3'))
@@ -36,17 +38,21 @@ def home():
             cursor.execute(sql)
             result = cursor.fetchall()
             peereval_sql = 'insert into `Peer_Evaluation`(evaluation_id, evaluator_id, evaluatee_id, assignment_id, date_submitted, self_evaluation) values(%s,%s,%s,%s,CURRENT_TIMESTAMP,%s)'
-            cursor.execute(peereval_sql, [result[0]['evaluation_id'] + 1, userID, 302, 402, selfeval])
+            cursor.execute(peereval_sql, [result[0]['evaluation_id'] + 1, userID, studentid, assignmentid, selfeval])
             dbconn.commit()
-            sql2 = 'select outcome_id from `Outcome` order by outcome_id desc limit 1'
-            cursor.execute(sql2)
+            sql = 'select outcome_id from `Outcome` order by outcome_id desc limit 1'
+            cursor.execute(sql)
             result2 = cursor.fetchall()
             outcome = 'insert into `Outcome`(outcome_id, evaluation_id, score) value(%s,%s,%s)'
             cursor.execute(outcome, [result2[0]['outcome_id'] + 1, result[0]['evaluation_id'] + 1, average])
             dbconn.commit()
+            sql = 'update Assignment set completed = 1 where assignment_id = %s;'
+            cursor.execute(sql, [assignmentid])
+            dbconn.commit()
+            return portal()
         except ValueError:
             flash('Commit failure, try again.', category='error')
-    return render_template("home.html")
+    return render_template("home.html", students = students)
 
 @views.route("/", methods=['POST', 'GET'])
 def login():
@@ -78,7 +84,7 @@ def login():
 
 @views.route("/portal")
 def portal():
-    sql = 'select c.course_name, co.course_id, a.offering_id, a.deadline from `Course` as c left join `Course_Offering` as co on (c.course_id = co.course_id) left join `Assignment` as a on (co.offering_id = a.offering_id) where a.student_id = %s;'
+    sql = 'select c.course_name, co.course_id, a.offering_id, a.deadline, a.assignment_id, a.completed from `Course` as c left join `Course_Offering` as co on (c.course_id = co.course_id) left join `Assignment` as a on (co.offering_id = a.offering_id) where a.student_id = %s;'
     cursor.execute(sql, [userID])
     result = cursor.fetchall()
     print(result)

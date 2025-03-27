@@ -45,24 +45,17 @@
 </style>
 
 <style>
-    
-    body {
-    background-color: #fefbe9;
-    font-family: Arial, sans-serif;
-  }
-  
   .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(325px, 1fr));
+    gap: 25px;
+    padding: 25px;
   }
   
   .card {
-    background-color: #f2e8cf;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background-color: #bbab95;
+    padding: 25px;
+    border: 2px black solid;
   }
   
   .card h3 {
@@ -116,13 +109,13 @@
     padding: 10px 20px;
     margin: 10px;
     border: none;
-    border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
-  }</style>
+  }
+</style>
 
 <main class="dashboard">
-    <h2>Student Performance Dashboard</h2>
+    <h1 style="margin: 25px;">Student Performance Dashboard</h1>
   
     <div class="dashboard-grid">
     
@@ -162,16 +155,4 @@
         </div>
         <div class="progress-label bottom-label">Incomplete</div>
       </div>
-       
-        
-  
-      <div class="dashboard-buttons">
-        <a href="{{ url_for('views.home') }}">
-          <button>Return to Peer Review Portal</button>
-        </a>
-        <a href="{{ url_for('views.login') }}">
-          <button>Logout</button>
-        </a>
-      </div>
-
 {% endblock %}
