@@ -42,9 +42,9 @@ def home():
             outcome = 'insert into `Outcome`(outcome_id, evaluation_id, score) value(%s,%s,%s)'
             cursor.execute(outcome, [result2[0]['outcome_id'] + 1, result[0]['evaluation_id'] + 1, average])
             dbconn.commit()
-            # sql = 'update Assignment set completed = 1 where assignment_id = %s;'
-            # cursor.execute(sql, [assignmentid])
-            # dbconn.commit()
+            sql = 'update Assignment set completed = 1 where assignment_id = %s;'
+            cursor.execute(sql, [assignmentid])
+            dbconn.commit()
             return portal()
         except ValueError:
             flash('Commit failure, try again.', category='error')
