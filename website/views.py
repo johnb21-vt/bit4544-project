@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, request, flash, json, redirect, ur
 from jinja2 import TemplateNotFound
 from website import dbconn, cursor
 from datetime import date
+import csv
+import io
 
 views = Blueprint('views', __name__)
 userID = None
@@ -159,9 +161,52 @@ def instructorportal():
 def group():
     return render_template("group.html")
 
-@views.route("/course")
+@views.route("/course", methods=['GET', 'POST'])
 def course():
+    if request.method == 'POST':
+        if 'csv_file' not in request.files:
+            flash('No file part', category='error')
+            return redirect(request.url)
+        file = request.files['csv_file']
+        if file.filename == '':
+            flash('No selected file', category='error')
+            return redirect(request.url)
+        if file and file.filename.endswith('.csv'):
+            try:
+                # Read the file content as bytes and decode it to a string
+                stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+                # Use csv.reader or csv.DictReader
+                # csv_reader = csv.reader(stream) # For list-like rows
+                csv_reader = csv.DictReader(stream) # If your CSV has headers
+
+                # Process the CSV rows
+                for row in csv_reader:
+                    # --- Your CSV processing logic goes here ---
+                    # Example: print each row
+                    print(row) 
+                    # Example: access data using header names (if using DictReader)
+                    # course_name = row.get('CourseName') 
+                    # student_id = row.get('StudentID')
+                    # --- End of your processing logic ---
+                
+                flash('CSV file processed successfully!', category='success')
+
+            except Exception as e:
+                flash(f'Error processing CSV file: {e}', category='error')
+            
+            # Redirect back to the course page after processing, 
+            # or render a different template if needed
+            return redirect(url_for('views.course')) 
+            
+        else:
+            flash('Invalid file type. Please upload a CSV file.', category='error')
+            return redirect(request.url)
+
+    # --- Existing GET request logic ---
+    # This part runs if the request method is GET
     sql = 'select co.offering_id, c.course_name from Course_Offering as co join Course as c on (c.course_id = co.course_id) where co.professor_id = %s'
-    cursor.execute(sql, [userID])
+    cursor.execute(sql, [userID]) # Assuming userID is accessible here
     courses = cursor.fetchall()
+    # --- End of existing GET request logic ---
+
     return render_template("course.html", courses=courses)

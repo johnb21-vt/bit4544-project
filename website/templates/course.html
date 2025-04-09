@@ -80,7 +80,16 @@
     </div>
 </div>
 
-<form method="POST" style="display: none;" id="choose">
+{% if parsed_courses %}
+    <h3>Parsed Courses:</h3>
+    <ul>
+        {% for row in parsed_courses %}
+            <li>{{ row }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<form method="POST" style="display: none;" id="choose" enctype="multipart/form-data">
     <div style="display: flex; align-items: center; justify-content: center;">
         <div style="padding: 25px; color: black; border: black 2px solid; border-radius: 20px; margin: 50px 0;">
             <h2 style="display: flex; justify-content: center; margin: 0 0 25px 0;">Select a Course Offering</h2>
@@ -96,7 +105,7 @@
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <label for="opitons" style="margin: 15px;">Upload Student List: </label>
-                <input style="padding: 10px; border: black 2px solid; border-radius: 20px;" type="file" accept=".xls,.xlsx,.csv" />
+                <input style="padding: 10px; border: black 2px solid; border-radius: 20px;" type="file" name="csv_file" accept=".csv" required/>
             </div>
             <div style="display: flex; justify-content: center; margin: 25px 0 0 0; text-align:center;">
                 <div style="height: auto; width:200px;">
