@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Instructor Portal{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg" style="background-color: #142057;">
+  <div class="container-fluid" style="color: white;">
+    <a class="navbar-brand" href="#" style="color: white;">SMU Feedback Hub</a>
+    <button style="color: white;" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span style="color: white;" class="navbar-toggler-icon"></span>
+    </button>
+    <div style="color: white;" class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div style="color: white;" class="navbar-nav">
+        <a style="font-weight: bold;" class="nav-link" aria-current="page" href="/portal">Peer Review Portal</a>
+        <a class="nav-link" href="/dashboard">Performance Dashboard</a>
+        <a class="nav-link" href="#">Evaluation Calander</a>
+        <a class="nav-link" href="/">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .grid-container {
+      display: grid;
+      width: 100%;
+      grid-template-columns: repeat(auto-fit, 300px);
+      grid-template-rows: auto;
+    }
+    
+    .card {
+      background-color: #dbdbdb;
+      border: 2px solid black;
+      height: 400px;
+      margin: 25px;
+    }
+  
+    .btn-primary{
+      background-color: #142057;
+      border: #142057;
+      border-radius: 20px;
+  }
+  .btn-primary:hover{
+      background-color: #0e173d;
+      border: #0e173d;
+  }
+  
+  .nav-link{
+    color: white;
+  }
+  
+  .nav-link:hover{
+    color: gold;
+  }
+  </style>
+
+<h1 style="margin: 25px;">Instructor Portal</h1>
+
+{% if userID == None %}
+  <p style="margin: 25px; font-size: 30px">Login to access your instructor portal.</p>
+{% endif %}
+
+<div class="grid-container">
+    <div class="card" style="display: flex; justify-content: center; align-items: center; gap: 10px; text-align: center;">
+        <img src="{{ url_for('static', filename='images/add-course.png') }}" style="height: 100px; width: 100px;">
+        <h3>Import Course Offerring & Students</h3>
+        <a href="/course" class="btn btn-primary" style="width: 150px;">Go</a>
+    </div>
+
+    <div class="card" style="display: flex; justify-content: center; align-items: center; gap: 10px; text-align: center;">
+        <img src="{{ url_for('static', filename='images/people.png') }}" style="height: 100px; width: 100px;">
+        <h3>Create Student Groups</h3>
+        <a href="/group" class="btn btn-primary" style="width: 150px;">Go</a>
+    </div>
+
+    <div class="card" style="display: flex; justify-content: center; align-items: center; gap: 10px; text-align: center;">
+        <img src="{{ url_for('static', filename='images/time.png') }}" style="height: 100px; width: 100px;">
+        <h3>Schedule Peer Evaluations</h3>
+        <a href="/schedule-eval" class="btn btn-primary" style="width: 150px;">Go</a>
+    </div>
+</div>
+
+{% endblock %}

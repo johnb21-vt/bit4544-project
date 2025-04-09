@@ -79,7 +79,7 @@ def login():
             results = cursor.fetchall()
             if results:
                 userID = results[0]['professor_id']
-                return dashboard()
+                return instructorportal()
             else:
                 return loginfail()
     return render_template("login.html", userID = userID)
@@ -148,5 +148,13 @@ def signup():
 @views.route("/signup-confirm")
 def signupconfirm():
     if request.method == 'POST':
-        return render_template('login.html')
+        return login()
     return render_template("signup-confirmation.html")
+
+@views.route("/instructor-portal")
+def instructorportal():
+    return render_template("instructor-portal.html")
+
+@views.route("/group")
+def group():
+    return render_template("group.html")
