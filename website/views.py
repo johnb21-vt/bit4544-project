@@ -163,6 +163,14 @@ def group():
 
 @views.route("/course", methods=['GET', 'POST'])
 def course():
+    sql = 'select co.offering_id, c.course_name from Course_Offering as co join Course as c on (c.course_id = co.course_id) where co.professor_id = %s'
+    cursor.execute(sql, [userID])
+    offerings = cursor.fetchall()
+
+    sql = 'select course_id, course_name from Course'
+    cursor.execute(sql)
+    courses = cursor.fetchall()
+
     if request.method == 'POST':
         if 'csv_file' not in request.files:
             flash('No file part', category='error')
@@ -199,14 +207,6 @@ def course():
             return redirect(url_for('views.course')) 
             
         else:
-            flash('Invalid file type. Please upload a CSV file.', category='error')
+            flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
             return redirect(request.url)
-
-    # --- Existing GET request logic ---
-    # This part runs if the request method is GET
-    sql = 'select co.offering_id, c.course_name from Course_Offering as co join Course as c on (c.course_id = co.course_id) where co.professor_id = %s'
-    cursor.execute(sql, [userID]) # Assuming userID is accessible here
-    courses = cursor.fetchall()
-    # --- End of existing GET request logic ---
-
-    return render_template("course.html", courses=courses)
+    return render_template("course.html", courses=courses, offerings=offerings)

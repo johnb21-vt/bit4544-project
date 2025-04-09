@@ -50,22 +50,22 @@
     color: gold;
   }
 
-  #radio-box{
+  .radio-box{
     border: black 2px solid;
     border-radius: 20px;
     margin: 50px 0;
     padding: 25px;
   }
 
-  #container{
+  .container{
     display: flex;
     align-items: center;
     justify-content: center;
   }
 </style>
 
-<div id="container">
-    <div id="radio-box">
+<div class="container">
+    <div class="radio-box">
         <p>Are you assigning students to an existing course?</p>
         <div style="display: flex; align-items: center; justify-content: space-evenly;">
             <div>
@@ -95,16 +95,16 @@
             <h2 style="display: flex; justify-content: center; margin: 0 0 25px 0;">Select a Course Offering</h2>
             <div style="display: flex; justify-content: center; margin: 25px">
                 <div>
-                    <label for="course">Course Offering: </label>
-                    <select name="course" id="course">
-                        {% for course in courses %}
-                        <option value="{{ course['offering_id'] }}">{{ course['offering_id'] }} {{ course['course_name'] }}</option>
+                    <label for="offering">Course Offering: </label>
+                    <select name="offering" id="offering">
+                        {% for offering in offerings %}
+                        <option value="{{ offering['offering_id'] }}">{{ offering['offering_id'] }} {{ offering['course_name'] }}</option>
                         {% endfor %}
                     </select>
                 </div>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label for="opitons" style="margin: 15px;">Upload Student List: </label>
+                <label for="opitons" style="margin: 25px;">Upload Student List: </label>
                 <input style="padding: 10px; border: black 2px solid; border-radius: 20px;" type="file" name="csv_file" accept=".csv" required/>
             </div>
             <div style="display: flex; justify-content: center; margin: 25px 0 0 0; text-align:center;">
@@ -124,29 +124,25 @@
             <h2 style="display: flex; justify-content: center; margin: 0 0 25px 0;">Create a Course Offering</h2>
             <div style="display: flex; justify-content: center; margin: 25px">
                 <div>
-                    <label for="studentid">Student Being Evaluated: </label>
-                    <select name="studentid" id="studentid">
-                        {% for student in students %}
-                        <option value="{{ student['student_id'] }}">{{ student['name'] }}</option>
+                    <label for="offering">Select a Course: </label>
+                    <select name="offering" id="offering">
+                        {% for course in courses %}
+                        <option value="{{ course['course_id'] }}">{{ course['course_name'] }}</option>
                         {% endfor %}
                     </select>
                 </div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label for="opitons" style="margin: 15px;">Disciplinary Knowledge</label>
-                <div style="margin: 15px;">
-                    <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off" value="1">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option1">Never</label>
-                    <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off" value="2">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option2">Sometimes</label>
-                    <input type="radio" class="btn-check" name="options" id="option3" autocomplete="off" value="3">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option3">Usually</label>
-                    <input type="radio" class="btn-check" name="options" id="option4" autocomplete="off" value="4">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option4">Regularly</label>
-                    <input type="radio" class="btn-check" name="options" id="option5" autocomplete="off" value="5">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option5">Always</label>
+            <div style="display: flex; justify-content: center; margin: 25px">
+                <div>
+                    <label for="offering">Semester: </label>
+                    <select name="offering" id="offering">
+                        <option value="fall">Fall</option>
+                        <option value="spring">Spring</option>
+                    </select>
                 </div>
             </div>
+            <label for="year">Enter year: </label>
+            <input type="text" name="year" id="yeara" placeholder="Enter a year" style="padding: 10px 25px; margin: 25px 0;">
             <div style="display: flex; justify-content: center; margin: 25px 0 0 0; text-align:center;">
                 <div style="height: auto; width:200px;">
                     <button type="submit" class="btn btn-primary" style="margin-bottom: 25px;">Submit</button>
