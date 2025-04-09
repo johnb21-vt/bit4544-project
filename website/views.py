@@ -4,6 +4,9 @@ from website import dbconn, cursor
 from datetime import date
 import csv
 import io
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 views = Blueprint('views', __name__)
 userID = None
@@ -159,7 +162,10 @@ def instructorportal():
 
 @views.route("/group")
 def group():
-    return render_template("group.html")
+    sql = 'select co.offering_id, c.course_name from Course_Offering as co join Course as c on (c.course_id = co.course_id) where co.professor_id = %s'
+    cursor.execute(sql, [userID])
+    offerings = cursor.fetchall()
+    return render_template("group.html", offerings=offerings)
 
 @views.route("/course", methods=['GET', 'POST'])
 def course():
@@ -193,10 +199,10 @@ def course():
                         sql = 'select student_id from Student where name = %s and email = %s'
                         cursor.execute(sql, [row['name'],row['email']])
                         result = cursor.fetchall()
+                        send_group_assignment_email(row['email'], row['name'], 'test course')
                         sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
                         cursor.execute(sql, [result[0]['student_id'], selectedcourse])
                         dbconn.commit()
-                        print('test')
                 except Exception as e:
                     print(f'Error processing CSV file: {e}', category='error')
                 return redirect(url_for('views.course')) 
@@ -235,7 +241,7 @@ def course():
                         sql = 'select student_id from Student where name = %s and email = %s'
                         cursor.execute(sql, [row['name'],row['email']])
                         result = cursor.fetchall()
-                        print(result)
+                        send_group_assignment_email(row['email'], row['name'], 'test course')
                         sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
                         cursor.execute(sql, [result[0]['student_id'], offeringID[0]['offering_id'] + 1])
                         dbconn.commit()
@@ -246,3 +252,21 @@ def course():
                 flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
                 return redirect(request.url)
     return render_template("course.html", courses=courses, offerings=offerings)
+
+def send_group_assignment_email(student_email, student_name, course_name):
+    message = Mail(
+        from_email='johnb21@vt.edu',
+        to_emails=student_email,
+        subject=f'Group Assignment Notification',
+        html_content=f"""
+            <p>Hi {student_name},</p>
+            <p>You’ve been assigned to the course <strong>{course_name}</strong>.</p>
+            <p>Best of luck!</p>
+        """
+    )
+    try:
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        print(f"Email sent to {student_email}: {response.status_code}")
+    except Exception as e:
+        print(f"Failed to send email: {e}")

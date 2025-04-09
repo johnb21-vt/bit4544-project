@@ -50,183 +50,20 @@
   }
 </style>
 
+<h1 style="margin: 25px 0 0 25px;">Create Student Groups</h1>
+
 <form method="POST">
     <div style="display: flex; align-items: center; justify-content: center;">
         <div style="padding: 25px; color: black; border: black 2px solid; border-radius: 20px; margin: 50px 0;">
             <h2 style="display: flex; justify-content: center; margin: 0 0 25px 0;">Peer Evaluation Form</h2>
             <div style="display: flex; justify-content: center; margin: 25px">
                 <div>
-                    <label for="studentid">Student Being Evaluated: </label>
-                    <select name="studentid" id="studentid">
-                        {% for student in students %}
-                        <option value="{{ student['student_id'] }}">{{ student['name'] }}</option>
+                    <label for="offering">Select Course Offering: </label>
+                    <select name="offering" id="offering">
+                        {% for offering in offerings %}
+                        <option value="{{ offering['offering_id'] }}">{{ offering['offering_id'] }} {{ offering['course_name'] }}</option>
                         {% endfor %}
                     </select>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label for="opitons" style="margin: 15px;">Disciplinary Knowledge</label>
-                <div style="margin: 15px;">
-                    <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off" value="1" style="background-color: red;">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option1">Never</label>
-                    <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off" value="2">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option2">Sometimes</label>
-                    <input type="radio" class="btn-check" name="options" id="option3" autocomplete="off" value="3">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option3">Usually</label>
-                    <input type="radio" class="btn-check" name="options" id="option4" autocomplete="off" value="4">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option4">Regularly</label>
-                    <input type="radio" class="btn-check" name="options" id="option5" autocomplete="off" value="5">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option5">Always</label>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label for="opitons" style="margin: 15px;">Multidisciplinary Knowledge</label>
-                <div style="margin: 15px;">
-                    <input type="radio" class="btn-check" name="options2" id="option6" autocomplete="off" value="1">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option6">Never</label>
-                    <input type="radio" class="btn-check" name="options2" id="option7" autocomplete="off" value="2">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option7">Sometimes</label>
-                    <input type="radio" class="btn-check" name="options2" id="option8" autocomplete="off" value="3">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option8">Usually</label>
-                    <input type="radio" class="btn-check" name="options2" id="option9" autocomplete="off" value="4">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option9">Regularly</label>
-                    <input type="radio" class="btn-check" name="options2" id="option10" autocomplete="off" value="5">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option10">Always</label>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label for="opitons" style="margin: 15px;">Critical Thinking/Problem Solving</label>
-                <div style="margin: 15px;">
-                    <input type="radio" class="btn-check" name="options3" id="option11" autocomplete="off" value="1">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option11">Never</label>
-                    <input type="radio" class="btn-check" name="options3" id="option12" autocomplete="off" value="2">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option12">Sometimes</label>
-                    <input type="radio" class="btn-check" name="options3" id="option13" autocomplete="off" value="3">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option13">Usually</label>
-                    <input type="radio" class="btn-check" name="options3" id="option14" autocomplete="off" value="4">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option14">Regularly</label>
-                    <input type="radio" class="btn-check" name="options3" id="option15" autocomplete="off" value="5">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option15">Always</label>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label for="opitons" style="margin: 15px;">Innovative/Entrepreneurial Skills</label>
-                <div style="margin: 15px;">
-                    <input type="radio" class="btn-check" name="options4" id="option16" autocomplete="off" value="1">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option16">Never</label>
-                    <input type="radio" class="btn-check" name="options4" id="option17" autocomplete="off" value="2">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option17">Sometimes</label>
-                    <input type="radio" class="btn-check" name="options4" id="option18" autocomplete="off" value="3">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option18">Usually</label>
-                    <input type="radio" class="btn-check" name="options4" id="option19" autocomplete="off" value="4">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option19">Regularly</label>
-                    <input type="radio" class="btn-check" name="options4" id="option20" autocomplete="off" value="5">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option20">Always</label>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label for="opitons" style="margin: 15px;">Collaboration/Leadership</label>
-                <div style="margin: 15px;">
-                    <input type="radio" class="btn-check" name="options5" id="option21" autocomplete="off" value="1">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option21">Never</label>
-                    <input type="radio" class="btn-check" name="options5" id="option22" autocomplete="off" value="2">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option22">Sometimes</label>
-                    <input type="radio" class="btn-check" name="options5" id="option23" autocomplete="off" value="3">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option23">Usually</label>
-                    <input type="radio" class="btn-check" name="options5" id="option24" autocomplete="off" value="4">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option24">Regularly</label>
-                    <input type="radio" class="btn-check" name="options5" id="option25" autocomplete="off" value="5">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option25">Always</label>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label for="opitons" style="margin: 15px;">Communication</label>
-                <div style="margin: 15px;">
-                    <input type="radio" class="btn-check" name="options6" id="option26" autocomplete="off" value="1">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option26">Never</label>
-                    <input type="radio" class="btn-check" name="options6" id="option27" autocomplete="off" value="2">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option27">Sometimes</label>
-                    <input type="radio" class="btn-check" name="options6" id="option28" autocomplete="off" value="3">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option28">Usually</label>
-                    <input type="radio" class="btn-check" name="options6" id="option29" autocomplete="off" value="4">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option29">Regularly</label>
-                    <input type="radio" class="btn-check" name="options6" id="option30" autocomplete="off" value="5">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option30">Always</label>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label for="opitons" style="margin: 15px;">Intercultural Understanding/Sensitivity</label>
-                <div style="margin: 15px;">
-                    <input type="radio" class="btn-check" name="options7" id="option31" autocomplete="off" value="1">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option31">Never</label>
-                    <input type="radio" class="btn-check" name="options7" id="option32" autocomplete="off" value="2">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option32">Sometimes</label>
-                    <input type="radio" class="btn-check" name="options7" id="option33" autocomplete="off" value="3">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option33">Usually</label>
-                    <input type="radio" class="btn-check" name="options7" id="option34" autocomplete="off" value="4">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option34">Regularly</label>
-                    <input type="radio" class="btn-check" name="options7" id="option35" autocomplete="off" value="5">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option35">Always</label>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label for="opitons" style="margin: 15px;">Sensitivity Towards Developments in Asia</label>
-                <div style="margin: 15px;">
-                    <input type="radio" class="btn-check" name="options8" id="option36" autocomplete="off" value="1">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option36">Never</label>
-                    <input type="radio" class="btn-check" name="options8" id="option37" autocomplete="off" value="2">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option37">Sometimes</label>
-                    <input type="radio" class="btn-check" name="options8" id="option38" autocomplete="off" value="3">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option38">Usually</label>
-                    <input type="radio" class="btn-check" name="options8" id="option39" autocomplete="off" value="4">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option39">Regularly</label>
-                    <input type="radio" class="btn-check" name="options8" id="option40" autocomplete="off" value="5">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option40">Always</label>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label for="opitons" style="margin: 15px;">Ethical/Social Responsibility</label>
-                <div style="margin: 15px;">
-                    <input type="radio" class="btn-check" name="options9" id="option41" autocomplete="off" value="1">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option41">Never</label>
-                    <input type="radio" class="btn-check" name="options9" id="option42" autocomplete="off" value="2">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option42">Sometimes</label>
-                    <input type="radio" class="btn-check" name="options9" id="option43" autocomplete="off" value="3">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option43">Usually</label>
-                    <input type="radio" class="btn-check" name="options9" id="option44" autocomplete="off" value="4">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option44">Regularly</label>
-                    <input type="radio" class="btn-check" name="options9" id="option45" autocomplete="off" value="5">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option45">Always</label>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label for="opitons" style="margin: 15px;">Self Directedness/Meta-Learning</label>
-                <div style="margin: 15px;">
-                    <input type="radio" class="btn-check" name="options10" id="option46" autocomplete="off" value="1">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option46">Never</label>
-                    <input type="radio" class="btn-check" name="options10" id="option47" autocomplete="off" value="2">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option47">Sometimes</label>
-                    <input type="radio" class="btn-check" name="options10" id="option48" autocomplete="off" value="3">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option48">Usually</label>
-                    <input type="radio" class="btn-check" name="options10" id="option49" autocomplete="off" value="4">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option49">Regularly</label>
-                    <input type="radio" class="btn-check" name="options10" id="option50" autocomplete="off" value="5">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option50">Always</label>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label for="opitons" style="margin: 15px;">Resilience/Positivity</label>
-                <div style="margin: 15px;">
-                    <input type="radio" class="btn-check" name="options11" id="option51" autocomplete="off" value="1">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option51">Never</label>
-                    <input type="radio" class="btn-check" name="options11" id="option52" autocomplete="off" value="2">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option52">Sometimes</label>
-                    <input type="radio" class="btn-check" name="options11" id="option53" autocomplete="off" value="3">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option53">Usually</label>
-                    <input type="radio" class="btn-check" name="options11" id="option54" autocomplete="off" value="4">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option54">Regularly</label>
-                    <input type="radio" class="btn-check" name="options11" id="option55" autocomplete="off" value="5">
-                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option55">Always</label>
                 </div>
             </div>
             <div style="display: flex; justify-content: center; margin: 25px 0 0 0; text-align:center;">
