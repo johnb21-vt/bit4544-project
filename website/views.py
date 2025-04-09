@@ -241,7 +241,7 @@ def course():
                         dbconn.commit()
                 except Exception as e:
                     print(f'Error processing CSV file: {e}', category='error')
-                return redirect(url_for('views.course')) 
+                return instructorportal()
             else:
                 flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
                 return redirect(request.url)
