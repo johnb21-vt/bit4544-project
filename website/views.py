@@ -172,41 +172,77 @@ def course():
     courses = cursor.fetchall()
 
     if request.method == 'POST':
-        if 'csv_file' not in request.files:
-            flash('No file part', category='error')
-            return redirect(request.url)
-        file = request.files['csv_file']
-        if file.filename == '':
-            flash('No selected file', category='error')
-            return redirect(request.url)
-        if file and file.filename.endswith('.csv'):
-            try:
-                # Read the file content as bytes and decode it to a string
-                stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
-                # Use csv.reader or csv.DictReader
-                # csv_reader = csv.reader(stream) # For list-like rows
-                csv_reader = csv.DictReader(stream) # If your CSV has headers
+        if 'offering' in request.form:
+            selectedcourse = request.form.get('offering')
 
-                # Process the CSV rows
-                for row in csv_reader:
-                    # --- Your CSV processing logic goes here ---
-                    # Example: print each row
-                    print(row) 
-                    # Example: access data using header names (if using DictReader)
-                    # course_name = row.get('CourseName') 
-                    # student_id = row.get('StudentID')
-                    # --- End of your processing logic ---
-                
-                flash('CSV file processed successfully!', category='success')
+            if 'csv_file' not in request.files:
+                flash('No file part', category='error')
+                return redirect(request.url)
+            
+            file = request.files['csv_file']
 
-            except Exception as e:
-                flash(f'Error processing CSV file: {e}', category='error')
+            if file.filename == '':
+                flash('No selected file', category='error')
+                return redirect(request.url)
             
-            # Redirect back to the course page after processing, 
-            # or render a different template if needed
-            return redirect(url_for('views.course')) 
-            
+            if file and file.filename.endswith('.csv'):
+                try:
+                    stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+                    csv_reader = csv.DictReader(stream)
+                    for row in csv_reader:
+                        sql = 'select student_id from Student where name = %s and email = %s'
+                        cursor.execute(sql, [row['name'],row['email']])
+                        result = cursor.fetchall()
+                        sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
+                        cursor.execute(sql, [result[0]['student_id'], selectedcourse])
+                        dbconn.commit()
+                        print('test')
+                except Exception as e:
+                    print(f'Error processing CSV file: {e}', category='error')
+                return redirect(url_for('views.course')) 
+            else:
+                flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
+                return redirect(request.url)
         else:
-            flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
-            return redirect(request.url)
+            course = request.form.get('course')
+            semester = request.form.get('semester')
+            year = request.form.get('year')
+            time = request.form.get('time')
+
+            sql = 'select offering_id from `Course_Offering` order by offering_id desc limit 1'
+            cursor.execute(sql)
+            offeringID = cursor.fetchall()
+
+            if 'csv_file' not in request.files:
+                flash('No file part', category='error')
+                return redirect(request.url)
+            
+            file = request.files['csv_file']
+
+            if file.filename == '':
+                flash('No selected file', category='error')
+                return redirect(request.url)
+            
+            sql = 'insert into `Course_Offering`(offering_id, course_id, professor_id, semester, year, time) values (%s,%s,%s,%s,%s,%s)'
+            cursor.execute(sql, [offeringID[0]['offering_id'] + 1, course, userID, semester, year, time])
+            dbconn.commit()
+            
+            if file and file.filename.endswith('.csv'):
+                try:
+                    stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+                    csv_reader = csv.DictReader(stream)
+                    for row in csv_reader:
+                        sql = 'select student_id from Student where name = %s and email = %s'
+                        cursor.execute(sql, [row['name'],row['email']])
+                        result = cursor.fetchall()
+                        print(result)
+                        sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
+                        cursor.execute(sql, [result[0]['student_id'], offeringID[0]['offering_id'] + 1])
+                        dbconn.commit()
+                except Exception as e:
+                    print(f'Error processing CSV file: {e}', category='error')
+                return redirect(url_for('views.course')) 
+            else:
+                flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
+                return redirect(request.url)
     return render_template("course.html", courses=courses, offerings=offerings)

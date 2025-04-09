@@ -118,31 +118,41 @@
     </div>
 </form>
 
-<form method="POST" style="display: none;" id="create">
+<form method="POST" style="display: none;" id="create" enctype="multipart/form-data">
     <div style="display: flex; align-items: center; justify-content: center;">
         <div style="padding: 25px; color: black; border: black 2px solid; border-radius: 20px; margin: 50px 0;">
             <h2 style="display: flex; justify-content: center; margin: 0 0 25px 0;">Create a Course Offering</h2>
             <div style="display: flex; justify-content: center; margin: 25px">
                 <div>
-                    <label for="offering">Select a Course: </label>
-                    <select name="offering" id="offering">
+                    <label for="course">Select a Course: </label>
+                    <select name="course" id="course">
                         {% for course in courses %}
                         <option value="{{ course['course_id'] }}">{{ course['course_name'] }}</option>
                         {% endfor %}
                     </select>
                 </div>
             </div>
-            <div style="display: flex; justify-content: center; margin: 25px">
+            <div style="display: flex; justify-content: center; align-items: center; margin: 25px">
                 <div>
-                    <label for="offering">Semester: </label>
-                    <select name="offering" id="offering">
-                        <option value="fall">Fall</option>
-                        <option value="spring">Spring</option>
+                    <label for="semester">Semester: </label>
+                    <select name="semester" id="semester">
+                        <option value="Fall">Fall</option>
+                        <option value="Spring">Spring</option>
                     </select>
                 </div>
             </div>
-            <label for="year">Enter year: </label>
-            <input type="text" name="year" id="yeara" placeholder="Enter a year" style="padding: 10px 25px; margin: 25px 0;">
+            <div style="display: flex; justify-content: center; align-items: center; margin: 25px">
+                <label for="year">Enter year: </label>
+                <input type="text" name="year" id="year" placeholder="Enter a year" style="padding: 10px 25px; margin: 25px 0;">
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; margin: 25px">
+                <label for="time">Enter time: </label>
+                <input type="time" name="time" id="time" style="padding: 10px 25px; margin: 25px 0;">
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; margin: 25px">
+                <label for="opitons" style="margin: 25px;">Upload Student List: </label>
+                <input style="padding: 10px; border: black 2px solid; border-radius: 20px;" type="file" name="csv_file" accept=".csv" required/>
+            </div>
             <div style="display: flex; justify-content: center; margin: 25px 0 0 0; text-align:center;">
                 <div style="height: auto; width:200px;">
                     <button type="submit" class="btn btn-primary" style="margin-bottom: 25px;">Submit</button>
