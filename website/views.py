@@ -56,26 +56,37 @@ def login():
     global userID
     userID = None
 
-    studentemail = request.form.get('studentemail')
-    studentpassword = request.form.get('studentpassword')
+    email = request.form.get('email')
+    password = request.form.get('password')
 
-    if not studentemail:
+    if not email:
         error = True
-        flash("Please enter your email.")
-    if not studentpassword:
+    if not password:
         error = True
-        flash("Please enter your password.")
     
     # Redirect back if there's an error
     if error == False: 
         cursor = dbconn.cursor()
         sql = "SELECT student_id FROM `Student` WHERE email = %s AND password = %s;"
-        cursor.execute(sql, [studentemail, studentpassword])
+        cursor.execute(sql, [email, password])
         results = cursor.fetchall()
         if results:
              userID = results[0]['student_id']
              return portal()
+        else:
+            sql = "SELECT professor_id FROM `Professor` WHERE email = %s AND password = %s;"
+            cursor.execute(sql, [email, password])
+            results = cursor.fetchall()
+            if results:
+                userID = results[0]['professor_id']
+                return dashboard()
+            else:
+                return loginfail()
     return render_template("login.html", userID = userID)
+
+@views.route("/login-fail")
+def loginfail():
+    return render_template("login-fail.html")
 
 @views.route("/portal")
 def portal():
@@ -92,29 +103,50 @@ def dashboard():
 @views.route("/resetpassword", methods=['POST', 'GET'])
 def password():
     if request.method == 'POST':
-        email = request.form.get('studentemail')
-        studentpassword = request.form.get('studentpassword')
-        studentconfirm = request.form.get('studentpasswordconfirm')
-        if studentconfirm == studentpassword:
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm = request.form.get('confirmpassword')
+        if confirm == password:
             sql = 'update `Student` as s set s.password = %s where s.email = %s'
-            cursor.execute(sql, [studentpassword, email])
+            cursor.execute(sql, [password, email])
             dbconn.commit()
             return login()
     return render_template("password.html")
 
 @views.route("/signup", methods=['POST', 'GET'])
 def signup():
-    sql = 'select student_id from `Student` order by student_id desc limit 1'
-    cursor.execute(sql)
-    result = cursor.fetchall()
     if request.method == 'POST':
-        name = request.form.get('studentname')
-        email = request.form.get('studentemail')
-        studentpassword = request.form.get('studentpassword')
-        studentconfirm = request.form.get('studentpasswordconfirm')
-        if studentconfirm == studentpassword:
-            sql = 'insert into `Student`(student_id, name, email, password) values(%s, %s, %s, %s)'
-            cursor.execute(sql, [result[0]['student_id'] + 1, name, email, studentpassword])
-            dbconn.commit()
-            return login()
+        role = request.form.get('role')
+        if role == 'student':
+            sql = 'select student_id from `Student` order by student_id desc limit 1'
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            name = request.form.get('name')
+            email = request.form.get('email')
+            password = request.form.get('password')
+            confirm = request.form.get('passwordconfirm')
+            if confirm == password:
+                sql = 'insert into `Student`(student_id, name, email, password) values(%s, %s, %s, %s)'
+                cursor.execute(sql, [result[0]['student_id'] + 1, name, email, password])
+                dbconn.commit()
+                return signupconfirm()
+        else:
+            sql = 'select professor_id from `Professor` order by professor_id desc limit 1'
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            name = request.form.get('name')
+            email = request.form.get('email')
+            password = request.form.get('password')
+            confirm = request.form.get('passwordconfirm')
+            if confirm == password:
+                sql = 'insert into `Professor`(professor_id, name, email, password) values(%s, %s, %s, %s)'
+                cursor.execute(sql, [result[0]['professor_id'] + 1, name, email, password])
+                dbconn.commit()
+                return signupconfirm()
     return render_template("signup.html")
+
+@views.route("/signup-confirm")
+def signupconfirm():
+    if request.method == 'POST':
+        return render_template('login.html')
+    return render_template("signup-confirmation.html")
