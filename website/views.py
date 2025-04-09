@@ -158,3 +158,10 @@ def instructorportal():
 @views.route("/group")
 def group():
     return render_template("group.html")
+
+@views.route("/course")
+def course():
+    sql = 'select co.offering_id, c.course_name from Course_Offering as co join Course as c on (c.course_id = co.course_id) where co.professor_id = %s'
+    cursor.execute(sql, [userID])
+    courses = cursor.fetchall()
+    return render_template("course.html", courses=courses)

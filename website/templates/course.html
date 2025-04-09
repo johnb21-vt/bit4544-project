@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block navbar %}
+<script src="{{ url_for('static', filename='assets/js/custom/course-func.js') }}"></script>
+<nav class="navbar navbar-expand-lg" style="background-color: #142057;">
+    <div class="container-fluid" style="color: white;">
+      <a class="navbar-brand" href="#" style="color: white;">SMU Feedback Hub</a>
+      <button style="color: white;" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span style="color: white;" class="navbar-toggler-icon"></span>
+      </button>
+      <div style="color: white;" class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div style="color: white;" class="navbar-nav">
+          <a style="font-weight: bold;" class="nav-link" aria-current="page" href="/portal">Peer Review Portal</a>
+          <a class="nav-link" href="/dashboard">Performance Dashboard</a>
+          <a class="nav-link" href="#">Evaluation Calander</a>
+          <a class="nav-link" href="/">Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .btn-outline-dark{
+        color: black;
+        border: black solid 1px;
+    }
+
+    .btn-primary{
+        background-color: #142057;
+        border: #142057;
+        border-radius: 20px;
+        width: 150px;
+        height: 50px;
+    }
+    .btn-primary:hover{
+        background-color: #0e173d;
+        border: #0e173d;
+    }
+    
+  .nav-link{
+    color: white;
+  }
+
+  .nav-link:hover{
+    color: gold;
+  }
+
+  #radio-box{
+    border: black 2px solid;
+    border-radius: 20px;
+    margin: 50px 0;
+    padding: 25px;
+  }
+
+  #container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+
+<div id="container">
+    <div id="radio-box">
+        <p>Are you assigning students to an existing course?</p>
+        <div style="display: flex; align-items: center; justify-content: space-evenly;">
+            <div>
+                <input type="radio" id="yes" name="group-type" value="yes" autocomplete="off">
+                <label for="yes">Yes</label>
+            </div>
+            <div>
+                <input type="radio" id="no" name="group-type" value="no" autocomplete="off">
+                <label for="no">No</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="POST" style="display: none;" id="choose">
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <div style="padding: 25px; color: black; border: black 2px solid; border-radius: 20px; margin: 50px 0;">
+            <h2 style="display: flex; justify-content: center; margin: 0 0 25px 0;">Select a Course Offering</h2>
+            <div style="display: flex; justify-content: center; margin: 25px">
+                <div>
+                    <label for="course">Course Offering: </label>
+                    <select name="course" id="course">
+                        {% for course in courses %}
+                        <option value="{{ course['offering_id'] }}">{{ course['offering_id'] }} {{ course['course_name'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label for="opitons" style="margin: 15px;">Upload Student List: </label>
+                <input style="padding: 10px; border: black 2px solid; border-radius: 20px;" type="file" accept=".xls,.xlsx,.csv" />
+            </div>
+            <div style="display: flex; justify-content: center; margin: 25px 0 0 0; text-align:center;">
+                <div style="height: auto; width:200px;">
+                    <button type="submit" class="btn btn-primary" style="margin-bottom: 25px;">Submit</button>
+                    <br>
+                    <button type="reset" class="btn btn-light" style="margin: auto;">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="POST" style="display: none;" id="create">
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <div style="padding: 25px; color: black; border: black 2px solid; border-radius: 20px; margin: 50px 0;">
+            <h2 style="display: flex; justify-content: center; margin: 0 0 25px 0;">Create a Course Offering</h2>
+            <div style="display: flex; justify-content: center; margin: 25px">
+                <div>
+                    <label for="studentid">Student Being Evaluated: </label>
+                    <select name="studentid" id="studentid">
+                        {% for student in students %}
+                        <option value="{{ student['student_id'] }}">{{ student['name'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label for="opitons" style="margin: 15px;">Disciplinary Knowledge</label>
+                <div style="margin: 15px;">
+                    <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off" value="1">
+                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option1">Never</label>
+                    <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off" value="2">
+                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option2">Sometimes</label>
+                    <input type="radio" class="btn-check" name="options" id="option3" autocomplete="off" value="3">
+                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option3">Usually</label>
+                    <input type="radio" class="btn-check" name="options" id="option4" autocomplete="off" value="4">
+                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option4">Regularly</label>
+                    <input type="radio" class="btn-check" name="options" id="option5" autocomplete="off" value="5">
+                    <label class="btn btn-outline-dark" style="font-weight: bold;" for="option5">Always</label>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: center; margin: 25px 0 0 0; text-align:center;">
+                <div style="height: auto; width:200px;">
+                    <button type="submit" class="btn btn-primary" style="margin-bottom: 25px;">Submit</button>
+                    <br>
+                    <button type="reset" class="btn btn-light" style="margin: auto;">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
