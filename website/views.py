@@ -160,6 +160,10 @@ def signupconfirm():
 def instructorportal():
     return render_template("instructor-portal.html")
 
+@views.route("/instructor-dashboard")
+def instructorDashboard():
+    return render_template("instructor-dashboard.html")
+
 @views.route("/group")
 def group():
     sql = 'select co.offering_id, c.course_name from Course_Offering as co join Course as c on (c.course_id = co.course_id) where co.professor_id = %s'

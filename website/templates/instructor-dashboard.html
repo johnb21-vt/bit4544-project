@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg" style="background-color: #142057;">
+    <div class="container-fluid" style="color: white;">
+        <a class="navbar-brand" href="#" style="color: white;">SMU Feedback Hub</a>
+        <button style="color: white;" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span style="color: white;" class="navbar-toggler-icon"></span>
+        </button>
+        <div style="color: white;" class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div style="color: white;" class="navbar-nav">
+                <a class="nav-link" aria-current="page" href="/instructor-portal">Instructor Portal</a>
+                <a style="font-weight: bold;" class="nav-link" href="/instructor-dashboard">Dashboard</a>
+                <a class="nav-link" href="/">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<style>
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 100px);
+    grid-template-rows: auto;
+  }
+  
+  .card {
+    background-color: #dbdbdb;
+    border: 2px solid black;
+    border-radius: 20px;
+    height: 50dvh;
+    margin: 25px;
+  }
+  
+  .nav-link{
+    color: white;
+  }
+
+  .nav-link:hover{
+    color: gold;
+  }
+</style>
+<div class="grid-containter">
+    <div class="card">
+      <iframe title="Tech Tut" width="1000px" height="500px" src="https://app.powerbi.com/reportEmbed?reportId=b14ea267-e290-473b-9a9c-b4f046fad3ac&autoAuth=true&ctid=872268bc-904f-4e4c-92a7-bae962d5b2b5" frameborder="0" allowFullScreen="true"></iframe>
+    </div>
+</div>
+
+{% endblock %}
+
+<!-- 
+<style>
+  .btn-primary{
+      background-color: #142057;
+      border: #142057;
+      width: 150px;
+      height: 50px;
+  }
+  .btn-primary:hover{
+      background-color: #0e173d;
+      border: #0e173d;
+  }
+
+  input{
+    width: 100%;
+  }
+  
+  a{
+    color: black;
+  }
+</style>
+
+<style>
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(325px, 1fr));
+    gap: 25px;
+    padding: 25px;
+  }
+  
+  .card {
+    background-color: #bbab95;
+    padding: 25px;
+    border: 2px black solid;
+  }
+  
+  .card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #1c2d5a;
+  }
+  
+  .card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+  }
+  
+  .peer-eval-box .progress-bar {
+    display: flex;
+    height: 25px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+  
+  .completed {
+    background-color: #1c2d5a;
+    height: 100%;
+  }
+  
+  .incomplete {
+    background-color: #fff;
+    height: 100%;
+  }
+  
+  .labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    color: #1c2d5a;
+    font-weight: bold;
+  }
+  
+  .dashboard-buttons {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .dashboard-buttons button {
+    background-color: #1c2d5a;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+  }
+</style>
+
+<main class="dashboard">
+    <h1 style="margin: 25px;">Student Performance Dashboard</h1>
+  
+    <div class="dashboard-grid">
+    
+      <div class="card">
+        <h3>Average Student Score by Course</h3>
+        <img src="{{ url_for('static', filename='images/course.png') }}" alt="Bar chart for scores by course">
+      </div>
+  
+      <div class="card">
+        <h3>Average Student Score by Group</h3>
+        <img src="{{ url_for('static', filename='images/barbygroup.png') }}" alt="Bar chart for scores by group">
+      </div>
+  
+      <div class="card">
+        <h3>Average Student Score by Evaluation Category</h3>
+        <img src="{{ url_for('static', filename='images/evaluationcat.png') }}" alt="Bar chart for scores by category">
+      </div>
+  
+      <div class="card">
+        <h3>Improvements Over Time</h3>
+        <img src="{{ url_for('static', filename='images/improvements.svg') }}" alt="Line chart for improvement over time">
+      </div>
+  
+      <div class="card">
+        <h3>Peer Comparison</h3>
+        <img src="{{ url_for('static', filename='images/boxplot.png') }}" alt="Box plot peer comparison">
+      </div>
+  
+      <div class="card peer-eval-box">
+        <h3>Total Peer Evaluations:</h3>
+        <p><strong>5 out of 9 Completed</strong></p>
+      
+        <div class="progress-label top-label">Completed</div>
+        <div class="progress-bar">
+          <div class="completed" style="width: 55%"></div>
+          <div class="incomplete" style="width: 45%"></div>
+        </div>
+        <div class="progress-label bottom-label">Incomplete</div>
+      </div> -->

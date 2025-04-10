@@ -12,7 +12,7 @@
         <div style="color: white;" class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div style="color: white;" class="navbar-nav">
                 <a style="font-weight: bold;" class="nav-link" aria-current="page" href="/instructor-portal">Instructor Portal</a>
-                <a class="nav-link" href="/dashboard">Dashboard</a>
+                <a class="nav-link" href="/instructor-dashboard">Dashboard</a>
                 <a class="nav-link" href="/">Logout</a>
             </div>
         </div>
@@ -52,12 +52,6 @@
     display: grid;
     grid-template-columns: 100px 100px 100px 100px 100px 100px / 100px 100px 100px 100px 100px;
     gap: 10px;
-    /* grid-template-areas:
-    'title title box box box box box'
-    'title title box box box box box'
-    'add remove box box box box'
-    'add remove box box box box'
-    'add remove box box box box'; */
   }
 
   #box{
@@ -71,31 +65,10 @@
     flex-direction: column;
   }
 
-  /* #title{
-    grid-column: 1 / 3;
-    grid-row: 1 / 3;
-  }
-
-  #add{
-    grid-column: 1 / 2;
-    grid-row: 4 / 7;
-  }
-
-  #remove{
-    grid-column: 2 / 3;
-    grid-row: 4 / 7;
-  }*/
-
   #group-students{
     display: grid;
     grid-template-columns: 400px 400px 400px / 800px;
     gap: 10px;
-    /* grid-template-areas:
-    'title title box box box box box'
-    'title title box box box box box'
-    'add remove box box box box'
-    'add remove box box box box'
-    'add remove box box box box'; */
   }
 
   #students{
@@ -112,6 +85,70 @@
     grid-column: 3 / 4;
     grid-row: 1 / 1;
   }
+
+  /* Container to help manage layout if needed */
+.checkbox-button-container {
+    margin-bottom: 10px; /* Optional spacing between buttons */
+    display: block; /* Ensure the container itself behaves as a block */
+  }
+  
+  /* Hide the actual checkbox */
+  .hidden-checkbox {
+    position: absolute; /* Remove from layout flow */
+    opacity: 0;        /* Make it invisible */
+    pointer-events: none; /* Prevent interactions */
+    width: 0;
+    height: 0;
+  }
+  
+  /* Style the label to look like a block-level button */
+  .checkbox-button-label {
+    display: block;         /* Makes the label take full width */
+    width: 100%;            /* Explicitly set width to 100% */
+    padding: 10px 15px;     /* Adjust padding as needed */
+    border: 1px solid #ccc; /* Button border */
+    border-radius: 4px;     /* Rounded corners */
+    background-color: #f8f9fa; /* Light background */
+    color: #212529;         /* Text color */
+    text-align: center;     /* Center the text */
+    cursor: pointer;        /* Indicate it's clickable */
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out; /* Smooth transitions */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  }
+  
+  /* Style for when the checkbox is checked */
+  .hidden-checkbox:checked + .checkbox-button-label {
+    background-color: #0d6efd; /* Example: Bootstrap primary blue */
+    color: white;             /* White text */
+    border-color: #0d6efd;     /* Matching border */
+  }
+  
+  /* Optional: Style for hover */
+  .checkbox-button-label:hover {
+    background-color: #e2e6ea; /* Slightly darker background on hover */
+    border-color: #adb5bd;
+  }
+  
+  /* Optional: Style for hover when checked */
+  .hidden-checkbox:checked + .checkbox-button-label:hover {
+    background-color: #0b5ed7; /* Darker blue on hover when checked */
+    border-color: #0a58ca;
+  }
+  
+  /* Optional: Style for focus (accessibility) */
+  .hidden-checkbox:focus + .checkbox-button-label {
+    outline: 2px solid #0d6efd; /* Add an outline when focused */
+    outline-offset: 2px;
+  }
+  
+  /* Optional: Style for disabled state */
+  .hidden-checkbox:disabled + .checkbox-button-label {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+    border-color: #ced4da;
+    opacity: 0.65;
+  }
 </style>
 
 <script>
@@ -119,10 +156,10 @@
 
     function init(){
         var x = document.getElementById("offering");
-        x.addEventListener("change", getProducts)
+        x.addEventListener("change", getStudents)
     }
 
-    function getProducts(){
+    function getStudents(){
         var selectedID = document.getElementById('offering').value;
         console.log(selectedID);
 
@@ -130,7 +167,19 @@
         {
             method: "GET"
         }).then(response => response.text()).then(data => {
-            document.getElementById("placeholder").innerHTML = data;
+            document.getElementById("students").innerHTML = data;
+        }).catch(error => {console.log(error);})
+    }
+
+    function getGroups(){
+        var selectedID = document.getElementById('offering').value;
+        console.log(selectedID);
+
+        fetch("/course-students?ofid=" + selectedID,
+        {
+            method: "GET"
+        }).then(response => response.text()).then(data => {
+            document.getElementById("students").innerHTML = data;
         }).catch(error => {console.log(error);})
     }
 </script>
@@ -168,18 +217,17 @@
             </div>
 
             <div id="group-students">
-                <div style="height: 200px; width: 300px; border: black 2px solid; border-radius: 20px; align-self: center; justify-self: center; background-color:#e9e9e9" id="students">
+                <div style="height: 200px; width: 300px; border: black 2px solid; border-radius: 20px; align-self: center; justify-self: center; background-color:#e9e9e9; overflow: scroll;" id="students">
 
                 </div>
                 <div style="display: flex; flex-direction:column; justify-content: center; align-items: center; margin: 25px; gap: 10px;" id="add-students">
                         <button id="add" class="btn btn-primary">Add <img src="{{ url_for('static', filename='images/add.png') }}" style="height: 20px; width: 20px; margin: 0 0 0 5px;"></button>
                         <button id="add" class="btn btn-primary"><img src="{{ url_for('static', filename='images/remove.png') }}" style="height: 20px; width: 20px; margin: 0 5px 0 0;"> Remove</button>
                 </div>
-                <div style="height: 200px; width: 300px; border: black 2px solid; border-radius: 20px; align-self: center; justify-self: center; background-color:#e9e9e9" id="group">
+                <div style="height: 200px; width: 300px; border: black 2px solid; border-radius: 20px; align-self: center; justify-self: center; background-color:#e9e9e9; overflow: scroll;" id="group">
 
                 </div>
             </div>
-            <div id="placeholder"></div>
             <div style="display: flex; justify-content: center; margin: 25px 0 0 0; text-align:center;">
                 <div style="height: auto; width:200px;">
                     <button type="submit" class="btn btn-primary" style="margin-bottom: 25px; margin-top: 25px;">Finish</button>
