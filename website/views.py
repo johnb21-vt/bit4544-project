@@ -199,10 +199,10 @@ def course():
                         sql = 'select student_id from Student where name = %s and email = %s'
                         cursor.execute(sql, [row['name'],row['email']])
                         result = cursor.fetchall()
-                        send_group_assignment_email(row['email'], row['name'], 'test course')
+                        send_group_assignment_email('johnbruns2003@gmail.com', 'John Bruns', 'test course')
                         sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
                         cursor.execute(sql, [result[0]['student_id'], selectedcourse])
-                        dbconn.commit()
+                        # dbconn.commit()
                 except Exception as e:
                     print(f'Error processing CSV file: {e}', category='error')
                 return redirect(url_for('views.course')) 
@@ -241,7 +241,7 @@ def course():
                         sql = 'select student_id from Student where name = %s and email = %s'
                         cursor.execute(sql, [row['name'],row['email']])
                         result = cursor.fetchall()
-                        send_group_assignment_email(row['email'], row['name'], 'test course')
+                        # send_group_assignment_email(row['email'], row['name'], 'test course')
                         sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
                         cursor.execute(sql, [result[0]['student_id'], offeringID[0]['offering_id'] + 1])
                         dbconn.commit()
@@ -255,7 +255,7 @@ def course():
 
 def send_group_assignment_email(student_email, student_name, course_name):
     message = Mail(
-        from_email='johnb21@vt.edu',
+        from_email='annaschwarz@vt.edu',
         to_emails=student_email,
         subject=f'Group Assignment Notification',
         html_content=f"""
