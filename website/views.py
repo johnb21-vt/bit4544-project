@@ -167,6 +167,16 @@ def group():
     offerings = cursor.fetchall()
     return render_template("group.html", offerings=offerings)
 
+@views.route("/course-students", methods=['GET'])
+def courseStudents():
+    offeringID = request.args.get('ofid')
+    print(offeringID)
+    sql = 'select sc.Student_ID, s.name from Student_Course as sc join Student as s on (sc.Student_ID = s.student_id) where offering_id = %s'
+    cursor.execute(sql, [offeringID])
+    students = cursor.fetchall()
+    print(students)
+    return render_template("live-students.html", students=students)
+
 @views.route("/course", methods=['GET', 'POST'])
 def course():
     sql = 'select co.offering_id, c.course_name from Course_Offering as co join Course as c on (c.course_id = co.course_id) where co.professor_id = %s'
@@ -199,7 +209,7 @@ def course():
                         sql = 'select student_id from Student where name = %s and email = %s'
                         cursor.execute(sql, [row['name'],row['email']])
                         result = cursor.fetchall()
-                        # send_group_assignment_email(row['email'], row['name'], 'test course')
+                        send_group_assignment_email(row['email'], row['name'], 'Business Analytics')
                         sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
                         cursor.execute(sql, [result[0]['student_id'], selectedcourse])
                         # dbconn.commit()
@@ -241,10 +251,10 @@ def course():
                         sql = 'select student_id from Student where name = %s and email = %s'
                         cursor.execute(sql, [row['name'],row['email']])
                         result = cursor.fetchall()
-                        # send_group_assignment_email(row['email'], row['name'], 'test course')
+                        send_group_assignment_email(row['email'], row['name'], 'Business Analytics')
                         sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
                         cursor.execute(sql, [result[0]['student_id'], offeringID[0]['offering_id'] + 1])
-                        dbconn.commit()
+                        # dbconn.commit()
                 except Exception as e:
                     print(f'Error processing CSV file: {e}', category='error')
                 return instructorportal()

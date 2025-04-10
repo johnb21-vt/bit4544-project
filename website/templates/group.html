@@ -50,6 +50,27 @@
   }
 </style>
 
+<script>
+    document.addEventListener("DOMContentLoaded", init)
+
+    function init(){
+        var x = document.getElementById("offering");
+        x.addEventListener("change", getProducts)
+    }
+
+    function getProducts(){
+        var selectedID = document.getElementById('offering').value;
+        console.log(selectedID);
+
+        fetch("/course-students?ofid=" + selectedID,
+        {
+            method: "GET"
+        }).then(response => response.text()).then(data => {
+            document.getElementById("placeholder").innerHTML = data;
+        }).catch(error => {console.log(error);})
+    }
+</script>
+
 <h1 style="margin: 25px 0 0 25px;">Create Student Groups</h1>
 
 <form method="POST">
