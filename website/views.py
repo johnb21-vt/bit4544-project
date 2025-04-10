@@ -326,8 +326,9 @@ def course():
                         sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
                         cursor.execute(sql, [result[0]['student_id'], offeringID[0]['offering_id'] + 1])
                         dbconn.commit()
+                        print('test')
                         sql = 'select c.course_name from Course as c join Course_Offering as co on (c.course_id = co.course_id) where co.offering_id = %s'
-                        cursor.execute(sql, [selectedcourse])
+                        cursor.execute(sql, [offeringID[0]['offering_id'] + 1])
                         result = cursor.fetchall()
                         send_course_assignment_email(row['email'], row['name'], result[0]['course_name'])
                 except Exception as e:
