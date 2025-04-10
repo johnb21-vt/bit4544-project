@@ -199,7 +199,7 @@ def course():
                         sql = 'select student_id from Student where name = %s and email = %s'
                         cursor.execute(sql, [row['name'],row['email']])
                         result = cursor.fetchall()
-                        send_group_assignment_email('johnbruns2003@gmail.com', 'John Bruns', 'test course')
+                        # send_group_assignment_email(row['email'], row['name'], 'test course')
                         sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
                         cursor.execute(sql, [result[0]['student_id'], selectedcourse])
                         # dbconn.commit()
