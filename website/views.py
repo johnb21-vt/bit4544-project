@@ -164,6 +164,22 @@ def instructorportal():
 def instructorDashboard():
     return render_template("instructor-dashboard.html")
 
+@views.route("/schedule-eval")
+def scheduleeval():
+    return render_template("schedule-eval.html")
+
+@views.route("/course-created", methods=['GET'])
+def coursecreated():
+    return render_template("course-created.html")
+
+@views.route("/course-updated", methods=['GET'])
+def courseupdated():
+    return render_template("course-updated.html")
+
+@views.route("/group-created", methods=['GET'])
+def groupcreated():
+    return render_template("group-created.html")
+
 @views.route("/group", methods=['POST', 'GET'])
 def group():
     sql = 'select co.offering_id, c.course_name from Course_Offering as co join Course as c on (c.course_id = co.course_id) where co.professor_id = %s'
@@ -206,7 +222,7 @@ def group():
                     send_group_assignment_email(row['email'], row['name'], result[0]['course_name'])
             except Exception as e:
                 print(f'Error processing CSV file: {e}')
-            return instructorportal()
+            return groupcreated()
         else:
             flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
             return instructorportal()
@@ -271,7 +287,7 @@ def course():
                         send_course_assignment_email(row['email'], row['name'], result[0]['course_name'])
                 except Exception as e:
                     print(f'Error processing CSV file: {e}')
-                return instructorportal()
+                return courseupdated()
             else:
                 flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
                 return redirect(request.url)
@@ -316,7 +332,7 @@ def course():
                         send_course_assignment_email(row['email'], row['name'], result[0]['course_name'])
                 except Exception as e:
                     print(f'Error processing CSV file: {e}')
-                return instructorportal()
+                return coursecreated()
             else:
                 flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
                 return redirect(request.url)

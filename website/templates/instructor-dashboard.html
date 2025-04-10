@@ -22,20 +22,6 @@
 
 {% block content %}
 <style>
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, 100px);
-    grid-template-rows: auto;
-  }
-  
-  .card {
-    background-color: #dbdbdb;
-    border: 2px solid black;
-    border-radius: 20px;
-    height: 50dvh;
-    margin: 25px;
-  }
-  
   .nav-link{
     color: white;
   }
@@ -44,10 +30,8 @@
     color: gold;
   }
 </style>
-<div class="grid-containter">
-    <div class="card">
-      <iframe title="Tech Tut" width="1000px" height="500px" src="https://app.powerbi.com/reportEmbed?reportId=b14ea267-e290-473b-9a9c-b4f046fad3ac&autoAuth=true&ctid=872268bc-904f-4e4c-92a7-bae962d5b2b5" frameborder="0" allowFullScreen="true"></iframe>
-    </div>
+<div>
+      <iframe title="Tech Tut" width="1000px" height="800px" style="border: black 2px solid; border-radius: 20px; margin: 25px;" src="https://app.powerbi.com/reportEmbed?reportId=b14ea267-e290-473b-9a9c-b4f046fad3ac&autoAuth=true&ctid=872268bc-904f-4e4c-92a7-bae962d5b2b5" frameborder="0" allowFullScreen="true"></iframe>
 </div>
 
 {% endblock %}
