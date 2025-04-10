@@ -164,22 +164,71 @@ def instructorportal():
 def instructorDashboard():
     return render_template("instructor-dashboard.html")
 
-@views.route("/group")
+@views.route("/group", methods=['POST', 'GET'])
 def group():
     sql = 'select co.offering_id, c.course_name from Course_Offering as co join Course as c on (c.course_id = co.course_id) where co.professor_id = %s'
     cursor.execute(sql, [userID])
     offerings = cursor.fetchall()
+    if request.method == 'POST':
+        selectedoffering = request.form.get('offering')
+
+        if 'csv_file' not in request.files:
+            flash('No file part', category='error')
+            return instructorportal()
+        
+        file = request.files['csv_file']
+
+        if file.filename == '':
+            flash('No selected file', category='error')
+            return instructorportal()
+        
+        sql = 'select Group_ID from `Course_Groups` order by Group_ID desc limit 1'
+        cursor.execute(sql)
+        latest_group = cursor.fetchall()
+        sql = 'insert into `Course_Groups`(Group_ID, Offering_ID) values(%s,%s)'
+        cursor.execute(sql, [latest_group[0]['Group_ID'] + 1, selectedoffering])
+        dbconn.commit()
+        
+        if file and file.filename.endswith('.csv'):
+            try:
+                stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+                csv_reader = csv.DictReader(stream)
+                for row in csv_reader:
+                    sql = 'select student_id from Student where name = %s and email = %s'
+                    cursor.execute(sql, [row['name'],row['email']])
+                    result = cursor.fetchall()
+                    sql = 'insert into `Student_Group`(group_id, offering_id, student_id) values(%s,%s,%s)'
+                    cursor.execute(sql, [latest_group[0]['Group_ID'] + 1, selectedoffering, result[0]['student_id']])
+                    dbconn.commit()
+                    sql = 'select c.course_name from Course as c join Course_Offering as co on (c.course_id = co.course_id) where co.offering_id = %s'
+                    cursor.execute(sql, [selectedoffering])
+                    result = cursor.fetchall()
+                    send_group_assignment_email(row['email'], row['name'], result[0]['course_name'])
+            except Exception as e:
+                print(f'Error processing CSV file: {e}')
+            return instructorportal()
+        else:
+            flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
+            return instructorportal()
     return render_template("group.html", offerings=offerings)
 
 @views.route("/course-students", methods=['GET'])
 def courseStudents():
     offeringID = request.args.get('ofid')
-    print(offeringID)
-    sql = 'select sc.Student_ID, s.name from Student_Course as sc join Student as s on (sc.Student_ID = s.student_id) where offering_id = %s'
+    sql = 'select sc.Student_ID, s.name, s.email from Student_Course as sc join Student as s on (sc.Student_ID = s.student_id) where offering_id = %s'
     cursor.execute(sql, [offeringID])
     students = cursor.fetchall()
-    print(students)
     return render_template("live-students.html", students=students)
+
+# @views.route("/course-groups", methods=['GET'])
+# def courseGroups():
+#     offeringID = request.args.get('ofid')
+#     print(offeringID)
+#     sql = 'select Group_ID from Course_Groups where Offering_ID = %s'
+#     cursor.execute(sql, [offeringID])
+#     groups = cursor.fetchall()
+#     print(groups)
+#     return render_template("live-groups.html", groups=groups)
 
 @views.route("/course", methods=['GET', 'POST'])
 def course():
@@ -213,13 +262,16 @@ def course():
                         sql = 'select student_id from Student where name = %s and email = %s'
                         cursor.execute(sql, [row['name'],row['email']])
                         result = cursor.fetchall()
-                        send_group_assignment_email(row['email'], row['name'], 'Business Analytics')
                         sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
                         cursor.execute(sql, [result[0]['student_id'], selectedcourse])
                         dbconn.commit()
+                        sql = 'select c.course_name from Course as c join Course_Offering as co on (c.course_id = co.course_id) where co.offering_id = %s'
+                        cursor.execute(sql, [selectedcourse])
+                        result = cursor.fetchall()
+                        send_course_assignment_email(row['email'], row['name'], result[0]['course_name'])
                 except Exception as e:
                     print(f'Error processing CSV file: {e}')
-                return redirect(url_for('views.course'))
+                return instructorportal()
             else:
                 flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
                 return redirect(request.url)
@@ -255,10 +307,13 @@ def course():
                         sql = 'select student_id from Student where name = %s and email = %s'
                         cursor.execute(sql, [row['name'],row['email']])
                         result = cursor.fetchall()
-                        send_group_assignment_email(row['email'], row['name'], 'Business Analytics')
                         sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
                         cursor.execute(sql, [result[0]['student_id'], offeringID[0]['offering_id'] + 1])
                         dbconn.commit()
+                        sql = 'select c.course_name from Course as c join Course_Offering as co on (c.course_id = co.course_id) where co.offering_id = %s'
+                        cursor.execute(sql, [selectedcourse])
+                        result = cursor.fetchall()
+                        send_course_assignment_email(row['email'], row['name'], result[0]['course_name'])
                 except Exception as e:
                     print(f'Error processing CSV file: {e}')
                 return instructorportal()
@@ -267,7 +322,7 @@ def course():
                 return redirect(request.url)
     return render_template("course.html", courses=courses, offerings=offerings)
 
-def send_group_assignment_email(student_email, student_name, course_name):
+def send_course_assignment_email(student_email, student_name, course_name):
     message = Mail(
         from_email='annaschwarz@vt.edu',
         to_emails=student_email,
@@ -275,6 +330,24 @@ def send_group_assignment_email(student_email, student_name, course_name):
         html_content=f"""
             <p>Hi {student_name},</p>
             <p>You’ve been assigned to the course <strong>{course_name}</strong>.</p>
+            <p>Best of luck!</p>
+        """
+    )
+    try:
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        print(f"Email sent to {student_email}: {response.status_code}")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
+def send_group_assignment_email(student_email, student_name, course_name):
+    message = Mail(
+        from_email='annaschwarz@vt.edu',
+        to_emails=student_email,
+        subject=f'Group Assignment Notification',
+        html_content=f"""
+            <p>Hi {student_name},</p>
+            <p>You’ve been assigned a group in your <strong>{course_name}</strong> class.</p>
             <p>Best of luck!</p>
         """
     )

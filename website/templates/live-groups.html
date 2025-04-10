@@ -1,0 +1,7 @@
+<label for="groups">Select Group: </label>
+<select name="groups" id="groups">
+    <option value="new">New Group</option>
+    {% for group in groups %}
+    <option value="{{ group['Group_ID'] }}">Group {{ group['Group_ID'] }}</option>
+    {% endfor %}
+</select>
