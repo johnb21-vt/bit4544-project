@@ -209,10 +209,10 @@ def course():
                         sql = 'select student_id from Student where name = %s and email = %s'
                         cursor.execute(sql, [row['name'],row['email']])
                         result = cursor.fetchall()
-                        # send_group_assignment_email(row['email'], row['name'], 'Business Analytics')
+                        send_group_assignment_email(row['email'], row['name'], 'Business Analytics')
                         sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
                         cursor.execute(sql, [result[0]['student_id'], selectedcourse])
-                        # dbconn.commit()
+                        dbconn.commit()
                 except Exception as e:
                     print(f'Error processing CSV file: {e}')
                 return redirect(url_for('views.course'))
@@ -251,10 +251,10 @@ def course():
                         sql = 'select student_id from Student where name = %s and email = %s'
                         cursor.execute(sql, [row['name'],row['email']])
                         result = cursor.fetchall()
-                        # send_group_assignment_email(row['email'], row['name'], 'Business Analytics')
+                        send_group_assignment_email(row['email'], row['name'], 'Business Analytics')
                         sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
                         cursor.execute(sql, [result[0]['student_id'], offeringID[0]['offering_id'] + 1])
-                        # dbconn.commit()
+                        dbconn.commit()
                 except Exception as e:
                     print(f'Error processing CSV file: {e}')
                 return instructorportal()
