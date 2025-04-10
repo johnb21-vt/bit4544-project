@@ -214,8 +214,8 @@ def course():
                         cursor.execute(sql, [result[0]['student_id'], selectedcourse])
                         # dbconn.commit()
                 except Exception as e:
-                    print(f'Error processing CSV file: {e}', category='error')
-                return redirect(url_for('views.course')) 
+                    print(f'Error processing CSV file: {e}')
+                return redirect(url_for('views.course'))
             else:
                 flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
                 return redirect(request.url)
@@ -256,7 +256,7 @@ def course():
                         cursor.execute(sql, [result[0]['student_id'], offeringID[0]['offering_id'] + 1])
                         # dbconn.commit()
                 except Exception as e:
-                    print(f'Error processing CSV file: {e}', category='error')
+                    print(f'Error processing CSV file: {e}')
                 return instructorportal()
             else:
                 flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
