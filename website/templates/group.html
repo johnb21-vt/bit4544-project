@@ -3,6 +3,7 @@
 {% block title %}Home{% endblock %}
 
 {% block navbar %}
+<script src="{{ url_for('static', filename='assets/js/custom/group-func.js') }}"></script>
 <nav class="navbar navbar-expand-lg" style="background-color: #142057;">
     <div class="container-fluid" style="color: white;">
         <a class="navbar-brand" href="#" style="color: white;">SMU Feedback Hub</a>
@@ -85,6 +86,19 @@
     grid-column: 3 / 4;
     grid-row: 1 / 1;
   }
+
+  .radio-box{
+    border: black 2px solid;
+    border-radius: 20px;
+    margin: 50px 0;
+    padding: 25px;
+  }
+
+  .container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 </style>
 
 <script>
@@ -117,9 +131,26 @@
 
 <h1 style="margin: 25px 0 0 25px;">Create Student Group</h1>
 
-<form method="POST" enctype="multipart/form-data">
+<div class="container">
+    <div class="radio-box">
+        <p>Would you like to add, modify, or delete a group?</p>
+        <div style="display: flex; justify-content: center;">
+            <select name="action" id="action">
+                <option value="none" selected>Select an option...</option>
+                <option value="add">Add</option>
+                <option value="modify">Modify</option>
+                <option value="delete">Delete</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<form method="POST" enctype="multipart/form-data" id="add" style="display: none;">
     <div style="display: flex; align-items: center; justify-content: center;">
         <div style="padding: 25px; color: black; border: black 2px solid; border-radius: 20px; margin: 50px 0;" id="grid-container">
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <h2>Create Group</h2>
+            </div>
             <div style="display: flex; justify-content: center; margin: 25px; gap: 10px">
                 <label for="offering">Select Course Offering: </label>
                 <select name="offering" id="offering">
@@ -136,6 +167,124 @@
                 <label for="opitons" style="margin: 25px;">Upload Student List: </label>
                 <input style="padding: 10px; border: black 2px solid; border-radius: 20px;" type="file" name="csv_file" accept=".csv" required/>
             </div>
+
+            <!-- <div style="display: flex; justify-content: center; margin: 25px; gap: 10px" id="groups"></div> -->
+
+            <div style="display: flex; justify-content: center; margin: 25px 0 0 0; text-align:center;">
+                <div style="height: auto; width:200px;">
+                    <button type="submit" class="btn btn-primary" style="margin-bottom: 25px; margin-top: 25px;">Finish</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", init)
+
+    function init(){
+        var y = document.getElementById("offering2");
+        y.addEventListener("change", getGroup);
+    }
+
+    function getGroup(){
+        var selectedID = document.getElementById('offering2').value;
+        console.log(selectedID);
+
+        fetch("/existing-groups?ofid=" + selectedID,
+        {
+            method: "GET"
+        }).then(response => response.text()).then(data => {
+            document.getElementById("groups").innerHTML = data;
+        }).catch(error => {console.log(error);})
+
+        /* fetch("/course-groups?ofid=" + selectedID,
+        {
+            method: "GET"
+        }).then(response => response.text()).then(data => {
+            document.getElementById("groups").innerHTML = data;
+        }).catch(error => {console.log(error);}) */
+    }
+</script>
+
+<form method="POST" enctype="multipart/form-data" id="modify" style="display: none;">
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <div style="padding: 25px; color: black; border: black 2px solid; border-radius: 20px; margin: 50px 0;" id="grid-container">
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <h2>Add Students to Group</h2>
+            </div>
+            <div style="display: flex; justify-content: center; margin: 25px; gap: 10px">
+                <label for="offering2">Select Course Offering: </label>
+                <select name="offering2" id="offering2">
+                    <option value="none">Select a course...</option>
+                    {% for offering in offerings %}
+                    <option value="{{ offering['offering_id'] }}">{{ offering['offering_id'] }} {{ offering['course_name'] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div id="groups"></div>
+
+            <div style="display: flex; justify-content: center; align-items: center; margin: 25px">
+                <label for="opitons" style="margin: 25px;">Upload Student List: </label>
+                <input style="padding: 10px; border: black 2px solid; border-radius: 20px;" type="file" name="csv_file" accept=".csv" required/>
+            </div>
+
+            <!-- <div style="display: flex; justify-content: center; margin: 25px; gap: 10px" id="groups"></div> -->
+
+            <div style="display: flex; justify-content: center; margin: 25px 0 0 0; text-align:center;">
+                <div style="height: auto; width:200px;">
+                    <button type="submit" class="btn btn-primary" style="margin-bottom: 25px; margin-top: 25px;">Finish</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", init)
+
+    function init(){
+        var z = document.getElementById("offering3");
+        z.addEventListener("change", delGroup);
+    }
+
+    function delGroup(){
+        var selectedID = document.getElementById('offering3').value;
+        console.log(selectedID);
+
+        fetch("/del-group?ofid=" + selectedID,
+        {
+            method: "GET"
+        }).then(response => response.text()).then(data => {
+            document.getElementById("delete-group").innerHTML = data;
+        }).catch(error => {console.log(error);})
+
+        /* fetch("/course-groups?ofid=" + selectedID,
+        {
+            method: "GET"
+        }).then(response => response.text()).then(data => {
+            document.getElementById("groups").innerHTML = data;
+        }).catch(error => {console.log(error);}) */
+    }
+</script>
+<form method="POST" id="delete" style="display: none;">
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <div style="padding: 25px; color: black; border: black 2px solid; border-radius: 20px; margin: 50px 0;" id="grid-container">
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <h2>Delete Group</h2>
+            </div>
+            <div style="display: flex; justify-content: center; margin: 25px; gap: 10px">
+                <label for="offering3">Select Course Offering: </label>
+                <select name="offering3" id="offering3">
+                    <option value="none">Select a course...</option>
+                    {% for offering in offerings %}
+                    <option value="{{ offering['offering_id'] }}">{{ offering['offering_id'] }} {{ offering['course_name'] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div id="delete-group"></div>
 
             <!-- <div style="display: flex; justify-content: center; margin: 25px; gap: 10px" id="groups"></div> -->
 

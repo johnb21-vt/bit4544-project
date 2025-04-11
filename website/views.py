@@ -180,52 +180,112 @@ def courseupdated():
 def groupcreated():
     return render_template("group-created.html")
 
+@views.route("/group-modified", methods=['GET'])
+def groupmodified():
+    return render_template("group-modified.html")
+
+@views.route("/group-deleted", methods=['GET'])
+def groupdeleted():
+    return render_template("group-deleted.html")
+
 @views.route("/group", methods=['POST', 'GET'])
 def group():
     sql = 'select co.offering_id, c.course_name from Course_Offering as co join Course as c on (c.course_id = co.course_id) where co.professor_id = %s'
     cursor.execute(sql, [userID])
     offerings = cursor.fetchall()
     if request.method == 'POST':
-        selectedoffering = request.form.get('offering')
+        if 'offering' in request.form:
+            selectedoffering = request.form.get('offering')
 
-        if 'csv_file' not in request.files:
-            flash('No file part', category='error')
-            return instructorportal()
-        
-        file = request.files['csv_file']
+            if 'csv_file' not in request.files:
+                flash('No file part', category='error')
+                return instructorportal()
+            
+            file = request.files['csv_file']
 
-        if file.filename == '':
-            flash('No selected file', category='error')
-            return instructorportal()
-        
-        sql = 'select Group_ID from `Course_Groups` order by Group_ID desc limit 1'
-        cursor.execute(sql)
-        latest_group = cursor.fetchall()
-        sql = 'insert into `Course_Groups`(Group_ID, Offering_ID) values(%s,%s)'
-        cursor.execute(sql, [latest_group[0]['Group_ID'] + 1, selectedoffering])
-        dbconn.commit()
-        
-        if file and file.filename.endswith('.csv'):
-            try:
-                stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
-                csv_reader = csv.DictReader(stream)
-                for row in csv_reader:
-                    sql = 'select student_id from Student where name = %s and email = %s'
-                    cursor.execute(sql, [row['name'],row['email']])
-                    result = cursor.fetchall()
-                    sql = 'insert into `Student_Group`(group_id, offering_id, student_id) values(%s,%s,%s)'
-                    cursor.execute(sql, [latest_group[0]['Group_ID'] + 1, selectedoffering, result[0]['student_id']])
-                    dbconn.commit()
-                    sql = 'select c.course_name from Course as c join Course_Offering as co on (c.course_id = co.course_id) where co.offering_id = %s'
-                    cursor.execute(sql, [selectedoffering])
-                    result = cursor.fetchall()
-                    send_group_assignment_email(row['email'], row['name'], result[0]['course_name'])
-            except Exception as e:
-                print(f'Error processing CSV file: {e}')
-            return groupcreated()
+            if file.filename == '':
+                flash('No selected file', category='error')
+                return instructorportal()
+            
+            sql = 'select Group_ID from `Course_Groups` order by Group_ID desc limit 1'
+            cursor.execute(sql)
+            latest_group = cursor.fetchall()
+            sql = 'insert into `Course_Groups`(Group_ID, Offering_ID) values(%s,%s)'
+            cursor.execute(sql, [latest_group[0]['Group_ID'] + 1, selectedoffering])
+            dbconn.commit()
+            
+            if file and file.filename.endswith('.csv'):
+                try:
+                    stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+                    csv_reader = csv.DictReader(stream)
+                    for row in csv_reader:
+                        sql = 'select student_id from Student where name = %s and email = %s'
+                        cursor.execute(sql, [row['name'],row['email']])
+                        result = cursor.fetchall()
+                        sql = 'insert into `Student_Group`(group_id, offering_id, student_id) values(%s,%s,%s)'
+                        cursor.execute(sql, [latest_group[0]['Group_ID'] + 1, selectedoffering, result[0]['student_id']])
+                        dbconn.commit()
+                        sql = 'select c.course_name from Course as c join Course_Offering as co on (c.course_id = co.course_id) where co.offering_id = %s'
+                        cursor.execute(sql, [selectedoffering])
+                        result = cursor.fetchall()
+                        send_group_assignment_email(row['email'], row['name'], result[0]['course_name'])
+                except Exception as e:
+                    print(f'Error processing CSV file: {e}')
+                return groupcreated()
+            else:
+                flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
+                return instructorportal()
+        elif 'offering2' in request.form:
+            selectedoffering = request.form.get('offering2')
+            selectedgroup = request.form.get('groups')
+            print(selectedgroup)
+
+            if 'csv_file' not in request.files:
+                flash('No file part', category='error')
+                return instructorportal()
+            
+            file = request.files['csv_file']
+
+            if file.filename == '':
+                flash('No selected file', category='error')
+                return instructorportal()
+            
+            sql = 'select Group_ID from `Course_Groups` order by Group_ID desc limit 1'
+            cursor.execute(sql)
+            latest_group = cursor.fetchall()
+            
+            if file and file.filename.endswith('.csv'):
+                try:
+                    stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+                    csv_reader = csv.DictReader(stream)
+                    for row in csv_reader:
+                        sql = 'select student_id from Student where name = %s and email = %s'
+                        cursor.execute(sql, [row['name'],row['email']])
+                        result = cursor.fetchall()
+                        sql = 'insert into `Student_Group`(group_id, offering_id, student_id) values(%s,%s,%s)'
+                        cursor.execute(sql, [selectedgroup, selectedoffering, result[0]['student_id']])
+                        dbconn.commit()
+                        sql = 'select c.course_name from Course as c join Course_Offering as co on (c.course_id = co.course_id) where co.offering_id = %s'
+                        cursor.execute(sql, [selectedoffering])
+                        result = cursor.fetchall()
+                        send_group_assignment_email(row['email'], row['name'], result[0]['course_name'])
+                except Exception as e:
+                    print(f'Error processing CSV file: {e}')
+                return groupmodified()
+            else:
+                flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
+                return instructorportal()
         else:
-            flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
-            return instructorportal()
+            selectedgroup = request.form.get('delete')
+
+            sql = 'delete from `Course_Groups` where Group_ID = %s'
+            cursor.execute(sql, selectedgroup)
+            dbconn.commit()
+
+            sql = 'delete from `Student_Group` where Group_ID = %s'
+            cursor.execute(sql, selectedgroup)
+            dbconn.commit()
+            return groupdeleted()
     return render_template("group.html", offerings=offerings)
 
 @views.route("/course-students", methods=['GET'])
@@ -234,7 +294,32 @@ def courseStudents():
     sql = 'select sc.Student_ID, s.name, s.email from Student_Course as sc join Student as s on (sc.Student_ID = s.student_id) where offering_id = %s'
     cursor.execute(sql, [offeringID])
     students = cursor.fetchall()
-    return render_template("live-students.html", students=students)
+    sql = 'select s.student_id, s.name, s.email, sg.group_id from `Student_Group` as sg join Student as s on (sg.student_id = s.student_id) where offering_id = %s'
+    cursor.execute(sql, [offeringID])
+    assigned = cursor.fetchall()
+    return render_template("live-students.html", students=students, assigned=assigned)
+
+@views.route("/existing-groups", methods=['GET'])
+def coursegroups():
+    offeringID = request.args.get('ofid')
+    sql = 'select sc.Student_ID, s.name, s.email from Student_Course as sc join Student as s on (sc.Student_ID = s.student_id) where offering_id = %s'
+    cursor.execute(sql, [offeringID])
+    students = cursor.fetchall()
+    sql = 'select s.student_id, s.name, s.email, sg.group_id from `Student_Group` as sg join Student as s on (sg.student_id = s.student_id) where offering_id = %s'
+    cursor.execute(sql, [offeringID])
+    assigned = cursor.fetchall()
+    sql = 'select Group_ID from Course_Groups where Offering_ID = %s'
+    cursor.execute(sql, [offeringID])
+    groups = cursor.fetchall()
+    return render_template("live-groups.html", students=students, assigned=assigned, groups=groups)
+
+@views.route("/del-group", methods=['GET'])
+def deletegroup():
+    offeringID = request.args.get('ofid')
+    sql = 'select Group_ID from Course_Groups where Offering_ID = %s'
+    cursor.execute(sql, [offeringID])
+    groups = cursor.fetchall()
+    return render_template("delete-groups.html", groups=groups)
 
 # @views.route("/course-groups", methods=['GET'])
 # def courseGroups():

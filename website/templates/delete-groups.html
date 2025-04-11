@@ -1,0 +1,9 @@
+<div style="display: flex; justify-content: center; gap: 10px">
+    <label for="delete">Select Group: </label>
+    <select name="delete" id="delete">
+        <option value="none">Select a group...</option>
+        {% for group in groups %}
+        <option value="{{ group['Group_ID'] }}">Group {{ group['Group_ID'] }}</option>
+        {% endfor %}
+    </select>
+</div>

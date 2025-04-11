@@ -18,3 +18,26 @@
         {% endfor %}
     </tbody>
 </table>
+
+<h2>Students Assigned a Group</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Group</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for as in assigned %}
+        <tr>
+
+            <td>{{ as['student_id'] }}</td>
+            <td>{{ as['name'] }}</td>
+            <td>{{ as['email'] }}</td>
+            <td>{{ as['group_id'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
