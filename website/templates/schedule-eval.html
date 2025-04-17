@@ -63,6 +63,71 @@
   }
 </style>
 
-<h1 style="margin: 25px 0 0 25px;">Functionality coming in sprint 3</h1>
+<script>
+  document.addEventListener("DOMContentLoaded", init)
+
+  function init(){
+      var x = document.getElementById("offering");
+      x.addEventListener("change", getStudents);
+  }
+
+  function getStudents(){
+      var selectedID = document.getElementById('offering').value;
+      console.log(selectedID);
+
+      fetch("/students?ofid=" + selectedID,
+      {
+          method: "GET"
+      }).then(response => response.text()).then(data => {
+          document.getElementById("students").innerHTML = data;
+      }).catch(error => {console.log(error);})
+
+      /* fetch("/course-groups?ofid=" + selectedID,
+      {
+          method: "GET"
+      }).then(response => response.text()).then(data => {
+          document.getElementById("groups").innerHTML = data;
+      }).catch(error => {console.log(error);}) */
+  }
+</script>
+<!-- enctype="multipart/form-data" -->
+<form method="POST" id="add">
+  <div style="display: flex; align-items: center; justify-content: center;">
+      <div style="padding: 25px; color: black; border: black 2px solid; border-radius: 20px; margin: 50px 0;" id="grid-container">
+          <div style="display: flex; justify-content: center; align-items: center;">
+              <h2>Schedule a Peer Evaluation</h2>
+          </div>
+          <div style="display: flex; justify-content: center; margin: 25px; gap: 10px">
+              <label for="offering">Select Course Offering: </label>
+              <select name="offering" id="offering">
+                  <option value="none">Select a course...</option>
+                  {% for offering in offerings %}
+                  <option value="{{ offering['offering_id'] }}">{{ offering['offering_id'] }} {{ offering['course_name'] }}</option>
+                  {% endfor %}
+              </select>
+          </div>
+
+          <div id="students"></div>
+
+          <div style="display: flex; justify-content: center; align-items: center; margin: 25px">
+              <label for="opitons" style="margin: 25px;">Due Date: </label>
+              <input style="padding: 10px; border: black 2px solid; border-radius: 20px;" type="date" name="date" id="date" required/>
+          </div>
+
+          <div style="display: flex; justify-content: center; align-items: center; margin: 25px">
+            <label for="opitons" style="margin: 25px;">Time: </label>
+            <input style="padding: 10px; border: black 2px solid; border-radius: 20px;" type="time" name="time" id="time" required/>
+        </div>
+
+          <!-- <div style="display: flex; justify-content: center; margin: 25px; gap: 10px" id="groups"></div> -->
+
+          <div style="display: flex; justify-content: center; margin: 25px 0 0 0; text-align:center;">
+              <div style="height: auto; width:200px;">
+                  <button type="submit" class="btn btn-primary" style="margin-bottom: 25px; margin-top: 25px;">Add Evaluation</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</form>
 
 {% endblock %}

@@ -164,9 +164,37 @@ def instructorportal():
 def instructorDashboard():
     return render_template("instructor-dashboard.html")
 
-@views.route("/schedule-eval")
+@views.route("/schedule-eval", methods=['POST', 'GET'])
 def scheduleeval():
-    return render_template("schedule-eval.html")
+    sql = 'select co.offering_id, c.course_name from Course_Offering as co join Course as c on (c.course_id = co.course_id) where co.professor_id = %s'
+    cursor.execute(sql, [userID])
+    offerings = cursor.fetchall()
+    if request.method == 'POST':
+        selectedoffering = request.form.get('offering')
+        evalDate = request.form.get('date')
+        evalTime = request.form.get('time')
+        dateTime = f'{evalDate} {evalTime}'
+        sql = 'select c.course_name from Course as c join Course_Offering as co on (c.course_id = co.course_id) where co.offering_id = %s'
+        cursor.execute(sql, [selectedoffering])
+        course = cursor.fetchone()
+        sql = 'select s.student_id, s.name, s.email from Student_Course as sc join Student as s on (s.student_id = sc.student_id) where sc.Offering_ID = %s'
+        cursor.execute(sql, [selectedoffering])
+        students = cursor.fetchall()
+        sql = 'select assignment_id from `Assignment` order by assignment_id desc limit 1'
+        cursor.execute(sql)
+        assignmentID = cursor.fetchone()
+        for student in students:
+            assignmentID['assignment_id'] += 1
+            sql = 'insert into `Assignment` values (%s, %s, %s, %s, %s, 0)'
+            cursor.execute(sql, [assignmentID['assignment_id'], selectedoffering, student['student_id'], date.today(), dateTime])
+            dbconn.commit()
+            # send_eval_assignment_email(student['email'], student['name'], course['course_name'])
+        return evalscheduled()
+    return render_template("schedule-eval.html", offerings=offerings)
+
+@views.route("/eval-scheduled", methods=['GET'])
+def evalscheduled():
+    return render_template("eval-scheduled.html")
 
 @views.route("/course-created", methods=['GET'])
 def coursecreated():
@@ -298,6 +326,14 @@ def courseStudents():
     cursor.execute(sql, [offeringID])
     assigned = cursor.fetchall()
     return render_template("live-students.html", students=students, assigned=assigned)
+
+@views.route("/students", methods=['GET'])
+def students():
+    offeringID = request.args.get('ofid')
+    sql = 'select sc.Student_ID, s.name, s.email from Student_Course as sc join Student as s on (sc.Student_ID = s.student_id) where offering_id = %s'
+    cursor.execute(sql, [offeringID])
+    students = cursor.fetchall()
+    return render_template("live-course.html", students=students)
 
 @views.route("/existing-groups", methods=['GET'])
 def coursegroups():
@@ -450,6 +486,24 @@ def send_group_assignment_email(student_email, student_name, course_name):
         html_content=f"""
             <p>Hi {student_name},</p>
             <p>You’ve been assigned a group in your <strong>{course_name}</strong> class.</p>
+            <p>Best of luck!</p>
+        """
+    )
+    try:
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        print(f"Email sent to {student_email}: {response.status_code}")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
+def send_eval_assignment_email(student_email, student_name, course_name):
+    message = Mail(
+        from_email='annaschwarz@vt.edu',
+        to_emails=student_email,
+        subject=f'Peer Evaluation Notification',
+        html_content=f"""
+            <p>Hi {student_name},</p>
+            <p>You’ve been assigned a peer evaluation in your <strong>{course_name}</strong> class.</p>
             <p>Best of luck!</p>
         """
     )
