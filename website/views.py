@@ -169,20 +169,33 @@ def scheduleeval():
     sql = 'select co.offering_id, c.course_name from Course_Offering as co join Course as c on (c.course_id = co.course_id) where co.professor_id = %s'
     cursor.execute(sql, [userID])
     offerings = cursor.fetchall()
+
     if request.method == 'POST':
         selectedoffering = request.form.get('offering')
+
+        sql = 'select distinct offering_id from Assignment where offering_id = %s'
+        cursor.execute(sql, [selectedoffering])
+        exists = cursor.fetchall()
+
+        if len(exists) > 0:
+            return evalexists()
+        
         evalDate = request.form.get('date')
         evalTime = request.form.get('time')
         dateTime = f'{evalDate} {evalTime}'
+
         sql = 'select c.course_name from Course as c join Course_Offering as co on (c.course_id = co.course_id) where co.offering_id = %s'
         cursor.execute(sql, [selectedoffering])
         course = cursor.fetchone()
+
         sql = 'select s.student_id, s.name, s.email from Student_Course as sc join Student as s on (s.student_id = sc.student_id) where sc.Offering_ID = %s'
         cursor.execute(sql, [selectedoffering])
         students = cursor.fetchall()
+
         sql = 'select assignment_id from `Assignment` order by assignment_id desc limit 1'
         cursor.execute(sql)
         assignmentID = cursor.fetchone()
+
         for student in students:
             assignmentID['assignment_id'] += 1
             sql = 'insert into `Assignment` values (%s, %s, %s, %s, %s, 0)'
@@ -193,6 +206,10 @@ def scheduleeval():
     return render_template("schedule-eval.html", offerings=offerings)
 
 @views.route("/eval-scheduled", methods=['GET'])
+def evalexists():
+    return render_template("eval-exists.html")
+
+@views.route("/eval-exists", methods=['GET'])
 def evalscheduled():
     return render_template("eval-scheduled.html")
 
@@ -459,6 +476,13 @@ def course():
                 flash('Invalid file type. Please upload a CSV file.', category='error', offerings=offerings)
                 return redirect(request.url)
     return render_template("course.html", courses=courses, offerings=offerings)
+
+@views.route("/eval-calender", methods=['GET'])
+def evalCalender():
+    sql = 'select Group_ID from Course_Groups where Offering_ID = %s'
+    cursor.execute(sql, [userID])
+    evals = cursor.fetchall()
+    return render_template("eval-calender.html", evals=evals)
 
 def send_course_assignment_email(student_email, student_name, course_name):
     message = Mail(
