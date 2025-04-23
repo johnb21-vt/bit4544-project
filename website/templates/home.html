@@ -62,9 +62,7 @@
     {% endif %}
 {% endwith %}
 
-<!-- onsubmit="sendToIFTTT(event)"  -->
-
-<form method="POST" onsubmit="sendToIFTTT(event)">
+<form method="POST">
     <div style="display: flex; align-items: center; justify-content: center;">
         <div style="padding: 25px; background-color: #dbdbdb; color: black; border: black 2px solid; margin: 50px 0;">
             <h2 style="display: flex; justify-content: center; margin: 0 0 25px 0;">Peer Evaluation Form</h2>
@@ -253,67 +251,4 @@
         </div>
     </div>
 </form>
-<!-- <br>
-<table>
-    <thead>
-        <tr>
-            <th>Student Name</th>
-            <th>Self_Eval</th>
-            <th>dk</th>
-            <th>mk</th>
-            <th>ctps</th>
-            <th>ies</th>
-            <th>cl</th>
-            <th>c</th>
-            <th>ius</th>
-            <th>stdia</th>
-            <th>esr</th>
-            <th>sdml</th>
-            <th>rp</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for student in students %}
-        <tr>
-            <td>{{ student['Student_Name'] }}</td>
-            <td>{{ student['Self_Eval'] }}</td>
-            <td>{{ student['dk'] }}</td>
-            <td>{{ student['mk'] }}</td>
-            <td>{{ student['ctps'] }}</td>
-            <td>{{ student['ies'] }}</td>
-            <td>{{ student['cl'] }}</td>
-            <td>{{ student['c'] }}</td>
-            <td>{{ student['ius'] }}</td>
-            <td>{{ student['stdia'] }}</td>
-            <td>{{ student['esr'] }}</td>
-            <td>{{ student['sdml'] }}</td>
-            <td>{{ student['rp'] }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table> -->
-
-<script>
-    function sendToIFTTT(event) {
-        //event.preventDefault(); // Stop form from reloading the page
-
-        const studentName = document.getElementById('studentname').value;
-        const selfEval = document.getElementById('selfeval').checked;
-
-        fetch("https://maker.ifttt.com/trigger/peer_eval_submitted/json/with/key/bZAvsaJHLY0kST65_VpkQH", {
-            method: "POST",
-            mode: "no-cors",  // <--- THIS IS THE KEY FIX
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                value1: studentName,
-                value2: selfEval ? "Yes" : "No"
-            })
-        });
-
-        alert("Peer evaluation submitted! (Email will be sent if everything worked.)");
-        document.querySelector("form").reset(); // optional: reset form
-    }
-</script>
 {% endblock %}

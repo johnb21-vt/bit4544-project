@@ -63,4 +63,43 @@
   }
 </style>
 
+<h1 style="margin: 25px 0 0 25px;">Evaluations</h1>
+
+<div style="display: flex; align-items: center; justify-content: center;">
+  <div style="margin: 25px 0;" id="grid-container">
+    <table style="border: 2px black solid;">
+      <thead>
+        <tr style="border: 2px black solid">
+          <th style="width: 250px;">Course Offering</th>
+          <th style="width: 250px;">Term & Year</th>
+          <th style="width: 250px;">Start Date</th>
+          <th style="width: 250px;">Due Date & Time</th>
+          <th style="width: 250px;">Status</th>
+          <th style="width: 250px;">Number of Responses</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for eval in evals %}
+          <tr>
+            <td>{{ eval['offering_id'] }} {{eval['course_name'] }}</td>
+            <td>{{ eval['semester'] }} {{eval['year'] }}</td>
+            <td>{{ eval['date_created'] }}</td>
+            <td>{{ eval['deadline'] }}</td>
+            <td>{{ eval['eval_status'] }}</td>
+            <td>{{ eval['sum'] }}/{{ eval['count'] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: center;">
+  <div style="margin: 25px 0;" id="grid-container">
+    <form method="GET" action="/render-portal">
+      <button type="submit" class="btn btn-primary" style="margin-bottom: 25px;">Return to Portal</button>
+  </form>
+  </div>
+</div>
+
 {% endblock %}
