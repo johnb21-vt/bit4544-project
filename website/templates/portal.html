@@ -13,7 +13,7 @@
       <div style="color: white;" class="navbar-nav">
         <a style="font-weight: bold;" class="nav-link" aria-current="page" href="/portal">Peer Review Portal</a>
         <a class="nav-link" href="/dashboard">Performance Dashboard</a>
-        <a class="nav-link" href="#">Evaluation Calander</a>
+        <a class="nav-link" href="/student-calender">Evaluation Calander</a>
         <a class="nav-link" href="/">Logout</a>
       </div>
     </div>
@@ -27,7 +27,7 @@
   .grid-container {
     display: grid;
     width: 100%;
-    grid-template-columns: repeat(auto-fit, 300px);
+    grid-template-columns: repeat(auto-fit, 400px);
     grid-template-rows: auto;
   }
   
@@ -59,6 +59,8 @@
 
 <h1 style="margin: 25px;">Peer Review Portal</h1>
 
+<h2 style="margin: 50px 0 0 25px;">Upcoming Reviews</h2>
+
 {% if userID == None %}
   <p style="margin: 25px; font-size: 30px">Login to access your peer evaluation portal.</p>
 {% endif %}
@@ -70,7 +72,7 @@
         <div class="card" style="display: flex; justify-content: center; align-items: center; gap: 10px; text-align: center;">
           <img src="{{ url_for('static', filename='images/student.png') }}" style="height: 100px; width: 100px;">
           <h3>Course</h3>
-          <p>{{ assignment['course_name'] }}</p>
+          <p>{{ assignment['offering_id'] }} {{ assignment['course_name'] }}</p>
           <p>Deadline: {{ assignment['deadline'] }}</p>
           <a href="/home?assignmentid={{ assignment['assignment_id'] }}" class="btn btn-primary" style="width: 150px;">Go</a>
         </div>
@@ -78,5 +80,21 @@
     {% endfor %}
   {% endif %}
 </div>
+
+<!-- <h2 style="margin: 50px 0 0 25px;">Completed Reviews</h2>
+
+<div class="grid-container">
+  {% if userID != None %}
+    {% for assignment in assignments %}
+    {% if assignment['completed'] %}
+        <div class="card" style="display: flex; justify-content: center; align-items: center; gap: 10px; text-align: center;">
+          <h3>{{ assignment['offering_id'] }} {{ assignment['course_name'] }}</h3>
+          <p>Status: Completed</p>
+          <p>Deadline: {{ assignment['deadline'] }}</p>
+        </div>
+    {% endif %}
+    {% endfor %}
+  {% endif %}
+</div> -->
 
 {% endblock %}
