@@ -501,7 +501,8 @@ def renderinstructorportal():
 def send_course_assignment_email(student_email, student_name, course_name):
     message = Mail(
         from_email='annaschwarz@vt.edu',
-        to_emails=student_email,
+        #to_emails=student_email,
+        to_emails='annaschwarz@vt.edu',
         subject=f'Group Assignment Notification',
         html_content=f"""
             <p>Hi {student_name},</p>
