@@ -204,7 +204,7 @@ def scheduleeval():
             sql = 'insert into `Assignment` values (%s, %s, %s, %s, %s, 0)'
             cursor.execute(sql, [assignmentID['assignment_id'], selectedoffering, student['student_id'], date.today(), dateTime])
             dbconn.commit()
-            # send_eval_assignment_email(student['email'], student['name'], course['course_name'])
+            send_eval_assignment_email(student['email'], student['name'], course['course_name'])
         return evalscheduled()
     return render_template("schedule-eval.html", offerings=offerings)
 
@@ -542,6 +542,7 @@ def send_eval_assignment_email(student_email, student_name, course_name):
         html_content=f"""
             <p>Hi {student_name},</p>
             <p>You’ve been assigned a peer evaluation in your <strong>{course_name}</strong> class.</p>
+            <p>This simulates the automated notification students would receive in the live system.</p>
             <p>Best of luck!</p>
         """
     )
