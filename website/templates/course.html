@@ -14,7 +14,8 @@
         <div style="color: white;" class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div style="color: white;" class="navbar-nav">
                 <a style="font-weight: bold;" class="nav-link" aria-current="page" href="/instructor-portal">Instructor Portal</a>
-                <a class="nav-link" href="/instructor-dashboard">Dashboard</a>
+                <a class="nav-link" href="/instructor-dashboard">Analytics Dashboard</a>
+                <a class="nav-link" href="/eval-calender">Evaluation Calender</a>
                 <a class="nav-link" href="/">Logout</a>
             </div>
         </div>
@@ -86,10 +87,10 @@
 <form method="POST" style="display: none;" id="choose" enctype="multipart/form-data">
     <div style="display: flex; align-items: center; justify-content: center;">
         <div style="padding: 25px; color: black; border: black 2px solid; border-radius: 20px; margin: 50px 0;">
-            <h2 style="display: flex; justify-content: center; margin: 0 0 25px 0;">Select a Course Offering</h2>
+            <h2 style="display: flex; justify-content: center; margin: 0 0 25px 0;">Import Students</h2>
             <div style="display: flex; justify-content: center; margin: 25px">
                 <div>
-                    <label for="offering">Course Offering: </label>
+                    <label for="offering">Select Course Offering: </label>
                     <select name="offering" id="offering">
                         {% for offering in offerings %}
                         <option value="{{ offering['offering_id'] }}">{{ offering['offering_id'] }} {{ offering['course_name'] }}</option>

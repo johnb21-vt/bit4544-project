@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Student Dashboard{% endblock %}
 
 {% block navbar %}
 <nav class="navbar navbar-expand-lg" style="background-color: #142057;">
@@ -18,28 +18,53 @@
       </div>
     </div>
   </div>
-  <img style="height: 75px; width:auto; margin: 10px 25px;" src="{{ url_for('static', filename='images/logo.png') }}" alt="SMU logo"><img style="height: 75px; width:auto; margin: 10px 25px;" src="{{ url_for('static', filename='images/logo.png') }}" alt="SMU logo">
+  <img style="height: 75px; width:auto; margin: 10px 25px;" src="{{ url_for('static', filename='images/logo.png') }}" alt="SMU logo">
 </nav>
 {% endblock %}
 
 {% block content %}
 <style>
-  .nav-link{
-    color: white;
+  .grid-container {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, 650px);
+    gap: 25px;
+    margin: 25px;
+    grid-template-rows: auto;
+  }
+  
+  .card {
+    height: 400px;
+    width: 650px;
   }
 
-  .nav-link:hover{
-    color: gold;
-  }
+.nav-link{
+  color: white;
+}
+
+.nav-link:hover{
+  color: gold;
+}
 </style>
 <h2 style="margin: 25px 0 0 25px;">Student Performance Dashboard</h2>
-<div style="display: flex;">
-  
-  <div>
-    <iframe title="Sprint 1 Implementation" width="800px" height="700px" style="border: black 2px solid; border-radius: 20px; margin: 25px;" src="https://app.powerbi.com/view?r=eyJrIjoiNmIyZDBiZjQtY2Q2ZS00Y2EyLTgyY2MtODc2NjBkMjI1OTQzIiwidCI6IjYwOTU2ODg0LTEwYWQtNDBmYS04NjNkLTRmMzJjMWUzYTM3YSIsImMiOjF9" frameborder="0" allowFullScreen="true"></iframe>
+<div class="grid-container">
+  <div class="card">
+    <iframe title="avg score by learning outcome bar chart" width="600px" height="400px" style="border: black 2px solid; border-radius: 20px; margin: 25px;" src="https://app.powerbi.com/view?r=eyJrIjoiNjQ2MzM5MmItODc2Yy00OTZhLWIyNjAtMGQ2ZTU2YWI0MGY0IiwidCI6IjYwOTU2ODg0LTEwYWQtNDBmYS04NjNkLTRmMzJjMWUzYTM3YSIsImMiOjF9" frameborder="0" allowFullScreen="true"></iframe>
   </div>
-  <div>
-    <iframe title="Sprint 1 Implementation" width="800px" height="700px" style="border: black 2px solid; border-radius: 20px; margin: 25px;" src="https://app.powerbi.com/view?r=eyJrIjoiN2M0N2IzMDQtNGM5NC00ZmJhLTlhZDMtZWQxMDI2NmRmNTBlIiwidCI6IjYwOTU2ODg0LTEwYWQtNDBmYS04NjNkLTRmMzJjMWUzYTM3YSIsImMiOjF9" frameborder="0" allowFullScreen="true"></iframe>
+  <div class="card">
+    <iframe title="S1 Outputs" width="600px" height="400px" style="border: black 2px solid; border-radius: 20px; margin: 25px;" src="https://app.powerbi.com/view?r=eyJrIjoiMjRkMzY3OTgtYTkzMS00MTcwLThkYmQtNThiOTQ0OWM5MzI5IiwidCI6IjYwOTU2ODg0LTEwYWQtNDBmYS04NjNkLTRmMzJjMWUzYTM3YSIsImMiOjF9" frameborder="0" allowFullScreen="true"></iframe>
+  </div>
+  <div class="card">
+    <iframe title="Final Sprint 1 Chart 1" width="600px" height="400px" style="border: black 2px solid; border-radius: 20px; margin: 25px;" src="https://app.powerbi.com/view?r=eyJrIjoiMDhlNmRiMDQtMmViNS00NDhmLWIzZDMtYjg1OTg3OGY3YzE0IiwidCI6IjYwOTU2ODg0LTEwYWQtNDBmYS04NjNkLTRmMzJjMWUzYTM3YSIsImMiOjF9" frameborder="0" allowFullScreen="true"></iframe>
+  </div>
+  <div class="card">
+    <iframe title="Final Sprint 1 Chart 2" width="600px" height="400px" style="border: black 2px solid; border-radius: 20px; margin: 25px;" src="https://app.powerbi.com/view?r=eyJrIjoiOTQ1OGE0NTUtY2E2NC00OGQzLWEyY2QtZWViZWUwNDRjMDBjIiwidCI6IjYwOTU2ODg0LTEwYWQtNDBmYS04NjNkLTRmMzJjMWUzYTM3YSIsImMiOjF9" frameborder="0" allowFullScreen="true"></iframe>
+  </div>
+  <div class="card">
+    <iframe title="evals submitted over time bar chart" width="600px" height="400px" style="border: black 2px solid; border-radius: 20px; margin: 25px;" src="https://app.powerbi.com/view?r=eyJrIjoiYmE5ZTgwMmYtNzAzYi00M2M5LWEyOGEtZmFiZWYwNzg0Y2E5IiwidCI6IjYwOTU2ODg0LTEwYWQtNDBmYS04NjNkLTRmMzJjMWUzYTM3YSIsImMiOjF9" frameborder="0" allowFullScreen="true"></iframe>
+  </div>
+  <div class="card">
+    <iframe title="response rate card visuals" width="600px" height="400px" style="border: black 2px solid; border-radius: 20px; margin: 25px;" src="https://app.powerbi.com/view?r=eyJrIjoiOTY1MTlhNTMtZGRiZC00YjdhLTk1NGEtN2MxNjQ3MjViMTljIiwidCI6IjYwOTU2ODg0LTEwYWQtNDBmYS04NjNkLTRmMzJjMWUzYTM3YSIsImMiOjF9" frameborder="0" allowFullScreen="true"></iframe>
   </div>
 </div>
 {% endblock %}

@@ -502,14 +502,14 @@ def course():
 
 @views.route("/eval-calender")
 def evalCalender():
-    sql = 'select c.course_name, co.offering_id, co.semester, co.year, a.date_created, a.deadline, if(sum(a.completed) < count(a.offering_id), "Open", "Completed") as eval_status, sum(a.completed) as sum, count(a.offering_id) as count from Assignment as a join Course_Offering as co on (a.offering_id = co.offering_id) join Course as c on (co.course_id = c.course_id) join Professor as p on (co.professor_id = p.professor_id) where p.professor_id = %s group by a.offering_id'
+    sql = 'select c.course_name, co.offering_id, co.semester, co.year, a.date_created, a.deadline, if(sum(a.completed) < count(a.offering_id), "Open", "Completed") as eval_status, sum(a.completed) as sum, count(a.offering_id) as count from Assignment as a join Course_Offering as co on (a.offering_id = co.offering_id) join Course as c on (co.course_id = c.course_id) join Professor as p on (co.professor_id = p.professor_id) where p.professor_id = %s group by a.offering_id order by eval_status desc, a.deadline asc'
     cursor.execute(sql, [userID])
     evals = cursor.fetchall()
     return render_template("eval-calender.html", evals=evals)
 
 @views.route("/student-calender")
 def studentCalender():
-    sql = 'select c.course_name, co.offering_id, co.semester, co.year, a.date_created, a.deadline, if(a.completed = 0, "Open", "Completed") as eval_status from Assignment as a join Course_Offering as co on (a.offering_id = co.offering_id) join Course as c on (co.course_id = c.course_id) where a.student_id = %s'
+    sql = 'select c.course_name, co.offering_id, co.semester, co.year, a.date_created, a.deadline, if(a.completed = 0, "Open", "Completed") as eval_status from Assignment as a join Course_Offering as co on (a.offering_id = co.offering_id) join Course as c on (co.course_id = c.course_id) where a.student_id = %s order by eval_status desc, a.deadline asc'
     cursor.execute(sql, [userID])
     evals = cursor.fetchall()
     return render_template("student-calender.html", evals=evals)
