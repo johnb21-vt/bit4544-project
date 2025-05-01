@@ -199,6 +199,9 @@ def scheduleeval():
         cursor.execute(sql, [selectedoffering])
         students = cursor.fetchall()
 
+        if len(students) == 0:
+            return noStudents()
+
         sql = 'select assignment_id from `Assignment` order by assignment_id desc limit 1'
         cursor.execute(sql)
         assignmentID = cursor.fetchone()
@@ -218,21 +221,24 @@ def scheduleeval():
                 sql = 'insert into `Assignment` values (%s, %s, %s, %s, %s, 0)'
                 cursor.execute(sql, [assignmentID['assignment_id'], selectedoffering, student['student_id'], date.today(), dateTime])
                 dbconn.commit()
-                break
 
-            sql = 'select * from `Student_Group` where group_id=%s'
-            cursor.execute(sql, [course_group['group_id']])
-            group = cursor.fetchall()
-
-            for person in group:
-                assignmentID['assignment_id'] += 1
-                sql = 'insert into `Assignment` values (%s, %s, %s, %s, %s, 0)'
-                cursor.execute(sql, [assignmentID['assignment_id'], selectedoffering, student['student_id'], date.today(), dateTime])
-                dbconn.commit()
+            if course_group is not None:
+                sql = 'select * from `Student_Group` where group_id=%s'
+                cursor.execute(sql, [course_group['group_id']])
+                group = cursor.fetchall()
+                for person in group:
+                    assignmentID['assignment_id'] += 1
+                    sql = 'insert into `Assignment` values (%s, %s, %s, %s, %s, 0)'
+                    cursor.execute(sql, [assignmentID['assignment_id'], selectedoffering, student['student_id'], date.today(), dateTime])
+                    dbconn.commit()
             
             send_eval_assignment_email(student['email'], student['name'], course[0]['course_name'])
         return evalscheduled()
     return render_template("schedule-eval.html", offerings=offerings)
+
+@views.route("/no-students")
+def noStudents():
+    return render_template("no-students.html")
 
 @views.route("/eval-scheduled", methods=['GET'])
 def evalexists():
