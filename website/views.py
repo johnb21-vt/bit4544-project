@@ -15,10 +15,10 @@ userID = None
 def home():
     assignmentid = request.args.get('assignmentid')
     groupnum = request.args.get('groupnum')
-    sql = 'select s.name, s.student_id from Student as s join Student_Group as sg on (s.student_id = sg.student_id) where group_id = %s'
+    sql = 'select s.name, s.student_id, from Student as s join Student_Group as sg on (s.student_id = sg.student_id) where group_id = %s'
     cursor.execute(sql, [groupnum])
     students = cursor.fetchall()
-    sql = 'select s.name as student_name from Student as s where student_id = %s'
+    sql = 'select s.name as student_name, s.email from Student as s where student_id = %s'
     cursor.execute(sql, [userID])
     user = cursor.fetchall()
     sql = 'select c.*, co.*, p.name from Course as c join Course_Offering as co on (c.course_id = co.course_id) join Assignment as a on (co.offering_id = a.offering_id) join Professor as p on (co.professor_id = p.professor_id) where a.assignment_id = %s'
@@ -57,6 +57,7 @@ def home():
             sql = 'update Assignment set completed = 1 where assignment_id = %s;'
             cursor.execute(sql, [assignmentid])
             dbconn.commit()
+            send_eval_completion_email(user[0]['email'], user[0]['student_name'], course[0]['course_name'])
             return portal()
         except ValueError:
             flash('Commit failure, try again.', category='error')
@@ -225,7 +226,7 @@ def scheduleeval():
                 cursor.execute(sql, [assignmentID['assignment_id'], selectedoffering, student['student_id'], date.today(), dateTime])
                 dbconn.commit()
             
-            #send_eval_assignment_email(student['email'], student['name'], course['course_name'])
+            send_eval_assignment_email(student['email'], student['name'], course['course_name'])
         return evalscheduled()
     return render_template("schedule-eval.html", offerings=offerings)
 
@@ -564,6 +565,25 @@ def send_eval_assignment_email(student_email, student_name, course_name):
             <p>You’ve been assigned peer evaluations in your <strong>{course_name}</strong> class.</p>
             <p>This simulates the automated notification students would receive in the live system.</p>
             <p>Best of luck!</p>
+        """
+    )
+    try:
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        print(f"Email sent to {student_email}: {response.status_code}")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+
+def send_eval_completion_email(student_email, student_name, course_name):
+    message = Mail(
+        from_email='annaschwarz@vt.edu',
+        to_emails=student_email,
+        subject=f'Peer Evaluation Notification',
+        html_content=f"""
+            <p>Hi {student_name},</p>
+            <p>Thank you for submitting a peer evaluation in your <strong>{course_name}</strong> class.</p>
+            <p></p>
+            <p>Keep it up!</p>
         """
     )
     try:
