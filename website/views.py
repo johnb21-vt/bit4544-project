@@ -15,7 +15,7 @@ userID = None
 def home():
     assignmentid = request.args.get('assignmentid')
     groupnum = request.args.get('groupnum')
-    sql = 'select s.name, s.student_id, from Student as s join Student_Group as sg on (s.student_id = sg.student_id) where group_id = %s'
+    sql = 'select s.name, s.student_id from Student as s join Student_Group as sg on (s.student_id = sg.student_id) where group_id = %s'
     cursor.execute(sql, [groupnum])
     students = cursor.fetchall()
     sql = 'select s.name as student_name, s.email from Student as s where student_id = %s'
