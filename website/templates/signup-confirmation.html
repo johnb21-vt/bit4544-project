@@ -5,8 +5,9 @@
 {% block navbar %}
 <nav class="navbar navbar-expand-lg" style="background-color: #142057;">
   <div class="container-fluid" style="color: white;">
-    <a class="navbar-brand" href="#" style="color: white;">SMU Feedback Hub</a>
+    <a class="navbar-brand" href="#" style="color: white; font-weight: bold; font-size: 30px;">SMU Feedback Hub</a>
   </div>
+  <img style="height: 75px; width:auto; margin: 10px 25px;" src="{{ url_for('static', filename='images/logo.png') }}" alt="SMU logo">
 </nav>
 {% endblock %}
 
@@ -41,10 +42,10 @@
 
 <form method="POST">
     <div style="display: flex; align-items: center; justify-content: center;">
-        <div style="padding: 50px; background-color: #dbdbdb; color: black; border: black 2px solid; border-radius: 20px; margin: 50px 0; width: 500px;">
+        <div style="padding: 50px; margin: 50px 0; width: 500px;">
             <div style="display: flex; justify-content: center; margin: 25px 0 0 0; text-align:center;">
-                <div style="height: auto; width:250px;">
-                    <h2 style="margin: 0 0 25px 0;">Thank you for signing up!</h2>
+                <div style="height: auto;">
+                    <h2 style="margin: 0 0 50px 0;">Thank you for signing up!</h2>
                     <button type="submit" class="btn btn-primary" style="margin-bottom: 25px;">Login</button>
                 </div>
             </div>

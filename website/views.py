@@ -14,9 +14,16 @@ userID = None
 @views.route('/home', methods=['GET', 'POST'])
 def home():
     assignmentid = request.args.get('assignmentid')
-    sql = 'select name, student_id from `Student`'
-    cursor.execute(sql)
+    groupnum = request.args.get('groupnum')
+    sql = 'select s.name, s.student_id from Student as s join Student_Group as sg on (s.student_id = sg.student_id) where group_id = %s'
+    cursor.execute(sql, [groupnum])
     students = cursor.fetchall()
+    sql = 'select s.name as student_name from Student as s where student_id = %s'
+    cursor.execute(sql, [userID])
+    user = cursor.fetchall()
+    sql = 'select c.*, co.*, p.name from Course as c join Course_Offering as co on (c.course_id = co.course_id) join Assignment as a on (co.offering_id = a.offering_id) join Professor as p on (co.professor_id = p.professor_id) where a.assignment_id = %s'
+    cursor.execute(sql, [assignmentid])
+    course = cursor.fetchall()
     if request.method == 'POST':
         studentid = request.form.get('studentid')
         selfeval = False
@@ -53,7 +60,7 @@ def home():
             return portal()
         except ValueError:
             flash('Commit failure, try again.', category='error')
-    return render_template("home.html", students = students)
+    return render_template("home.html", students = students, course = course, user=user)
 
 @views.route("/", methods=['POST', 'GET'])
 def login():
@@ -95,7 +102,7 @@ def loginfail():
 
 @views.route("/portal")
 def portal():
-    sql = 'select c.course_name, co.course_id, a.offering_id, a.deadline, a.assignment_id, a.completed from `Course` as c left join `Course_Offering` as co on (c.course_id = co.course_id) left join `Assignment` as a on (co.offering_id = a.offering_id) where a.student_id = %s'
+    sql = 'select distinct c.course_name, co.course_id, a.offering_id, a.deadline, a.assignment_id, a.completed, p.name, sg.group_id, co.year, co.semester from `Course` as c join `Course_Offering` as co on (c.course_id = co.course_id) join `Assignment` as a on (co.offering_id = a.offering_id) join `Professor` as p on (co.professor_id = p.professor_id) join Student_Group as sg on (a.offering_id = sg.offering_id) where a.student_id =  %s'
     cursor.execute(sql, [userID])
     result = cursor.fetchall()
     return render_template("portal.html", assignments = result, userID = userID)
@@ -187,10 +194,6 @@ def scheduleeval():
         evalTime = request.form.get('time')
         dateTime = f'{evalDate} {evalTime}'
 
-        sql = 'select c.course_name from Course as c join Course_Offering as co on (c.course_id = co.course_id) where co.offering_id = %s'
-        cursor.execute(sql, [selectedoffering])
-        course = cursor.fetchone()
-
         sql = 'select s.student_id, s.name, s.email from Student_Course as sc join Student as s on (s.student_id = sc.student_id) where sc.Offering_ID = %s'
         cursor.execute(sql, [selectedoffering])
         students = cursor.fetchall()
@@ -200,11 +203,29 @@ def scheduleeval():
         assignmentID = cursor.fetchone()
 
         for student in students:
-            assignmentID['assignment_id'] += 1
-            sql = 'insert into `Assignment` values (%s, %s, %s, %s, %s, 0)'
-            cursor.execute(sql, [assignmentID['assignment_id'], selectedoffering, student['student_id'], date.today(), dateTime])
-            dbconn.commit()
-            # send_eval_assignment_email(student['email'], student['name'], course['course_name'])
+
+            sql = 'select * from `Student_Group` where offering_id = %s and student_id = %s'
+            cursor.execute(sql, [selectedoffering, student['student_id']])
+            course_group = cursor.fetchone()
+
+            if course_group is None:
+                assignmentID['assignment_id'] += 1
+                sql = 'insert into `Assignment` values (%s, %s, %s, %s, %s, 0)'
+                cursor.execute(sql, [assignmentID['assignment_id'], selectedoffering, student['student_id'], date.today(), dateTime])
+                dbconn.commit()
+                break
+
+            sql = 'select * from `Student_Group` where group_id=%s'
+            cursor.execute(sql, [course_group['group_id']])
+            group = cursor.fetchall()
+
+            for person in group:
+                assignmentID['assignment_id'] += 1
+                sql = 'insert into `Assignment` values (%s, %s, %s, %s, %s, 0)'
+                cursor.execute(sql, [assignmentID['assignment_id'], selectedoffering, student['student_id'], date.today(), dateTime])
+                dbconn.commit()
+            
+            #send_eval_assignment_email(student['email'], student['name'], course['course_name'])
         return evalscheduled()
     return render_template("schedule-eval.html", offerings=offerings)
 
@@ -467,7 +488,6 @@ def course():
                         sql = 'insert into `Student_Course`(Student_ID, Offering_ID) values(%s,%s)'
                         cursor.execute(sql, [result[0]['student_id'], offeringID[0]['offering_id'] + 1])
                         dbconn.commit()
-                        print('test')
                         sql = 'select c.course_name from Course as c join Course_Offering as co on (c.course_id = co.course_id) where co.offering_id = %s'
                         cursor.execute(sql, [offeringID[0]['offering_id'] + 1])
                         result = cursor.fetchall()
@@ -541,7 +561,7 @@ def send_eval_assignment_email(student_email, student_name, course_name):
         subject=f'Peer Evaluation Notification',
         html_content=f"""
             <p>Hi {student_name},</p>
-            <p>You’ve been assigned a peer evaluation in your <strong>{course_name}</strong> class.</p>
+            <p>You’ve been assigned peer evaluations in your <strong>{course_name}</strong> class.</p>
             <p>This simulates the automated notification students would receive in the live system.</p>
             <p>Best of luck!</p>
         """

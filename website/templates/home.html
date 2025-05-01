@@ -18,6 +18,7 @@
         </div>
       </div>
     </div>
+    <img style="height: 75px; width:auto; margin: 10px 25px;" src="{{ url_for('static', filename='images/logo.png') }}" alt="SMU logo">
 </nav>
 {% endblock %}
 
@@ -64,11 +65,20 @@
 
 <form method="POST">
     <div style="display: flex; align-items: center; justify-content: center;">
-        <div style="padding: 25px; background-color: #dbdbdb; color: black; border: black 2px solid; margin: 50px 0;">
+        <div style="padding: 25px; color: black; border: black 2px solid; margin: 50px 0; border-radius: 20px;">
             <h2 style="display: flex; justify-content: center; margin: 0 0 25px 0;">Peer Evaluation Form</h2>
-            <div style="display: flex; justify-content: center; margin: 25px">
+            <h4 style="display: flex; justify-content: center; margin: 0 0 25px 0;">{{ course[0]['course_code'] }} {{ course[0]['course_name'] }} {{ course[0]['course_id'] }}</h4>
+            <div style="display: flex; justify-content: center;">
+                <p><strong>Course CRN: </strong>{{ course[0]['offering_id'] }}</p>
+            </div>
+            <div style="display: flex; justify-content: center;">
+                <p style="display: inline;">{{ course[0]['semester'] }} {{ course[0]['year'] }}</p>
+                <p style="display: inline; margin: 0 0 0 50px">{{ course[0]['name'] }}</p>
+            </div>
+            <div style="display: flex; justify-content: center; margin: 25px 0">
                 <div>
-                    <label for="studentid">Student Being Evaluated: </label>
+                    <p><strong>Completed By:</strong> {{ user[0]['student_name'] }}</p>
+                    <label for="studentid"><strong>Student Being Evaluated:</strong> </label>
                     <select name="studentid" id="studentid">
                         {% for student in students %}
                         <option value="{{ student['student_id'] }}">{{ student['name'] }}</option>
