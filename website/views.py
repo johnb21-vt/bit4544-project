@@ -121,7 +121,7 @@ def password():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        confirm = request.form.get('confirmpassword')
+        confirm = request.form.get('passwordconfirm')
         if confirm == password:
             sql = 'update `Student` as s set s.password = %s where s.email = %s'
             cursor.execute(sql, [password, email])
