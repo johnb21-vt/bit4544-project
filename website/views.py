@@ -203,6 +203,10 @@ def scheduleeval():
         cursor.execute(sql)
         assignmentID = cursor.fetchone()
 
+        sql = 'select c.course_name from Course as c join Course_Offering as co on (c.course_id = co.course_id) where offering_id = %s'
+        cursor.execute(sql, [selectedoffering])
+        course = cursor.fetchall()
+
         for student in students:
 
             sql = 'select * from `Student_Group` where offering_id = %s and student_id = %s'
