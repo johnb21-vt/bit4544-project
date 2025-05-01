@@ -142,7 +142,7 @@ def signup():
             password = request.form.get('password')
             confirm = request.form.get('passwordconfirm')
             if confirm == password:
-                sql = 'insert into `Student`(student_id, name, email, password) values(%s, %s, %s, %s, %s)'
+                sql = 'insert into `Student`(student_id, name, email, password, semester_onboarded) values(%s, %s, %s, %s, %s)'
                 cursor.execute(sql, [result[0]['student_id'] + 1, name, email, password, date.today()])
                 dbconn.commit()
                 return signupconfirm()
