@@ -230,7 +230,7 @@ def scheduleeval():
                 cursor.execute(sql, [assignmentID['assignment_id'], selectedoffering, student['student_id'], date.today(), dateTime])
                 dbconn.commit()
             
-            send_eval_assignment_email(student['email'], student['name'], course['course_name'])
+            send_eval_assignment_email(student['email'], student['name'], course[0]['course_name'])
         return evalscheduled()
     return render_template("schedule-eval.html", offerings=offerings)
 
